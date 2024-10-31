@@ -3,8 +3,6 @@ function generateData() {
 
     //get random time between -30 and 30 seconds from now
     const now = new Date();
-    const randomSeconds = Math.floor(Math.random() * 61) - 30; // Random number between -30 and 30
-    now.setSeconds(now.getSeconds() + randomSeconds);
     const time = now.toISOString().slice(0, 16).replace('T', ' ');
     const timeUnix = Math.floor(now.getTime() / 1000);
     
@@ -40,6 +38,11 @@ function OnUpdate(doc, meta) {
     for (let i = 0; i < count; i++) {
         var uuid = generateUUID()
         // generate final data in data collection "count" times
-        data_collection[uuid] = generateData()
+        
+        try { 
+            data_collection[uuid] = generateData()
+        } catch(e) {
+            log('Error generating data: ', e)
+        }
     }
 }
