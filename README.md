@@ -2,11 +2,15 @@
 
 It's common to see high volume data ingestion while needing to have a mechanism to automatically aggregate every minute / hour, or any other defined time span, for real time insights. The conventional thinking is to use Kafka to stream data for a raw transaction table/collection, and additionally set up another client with a cron job to slicing the data, do aggregation, and write back to another table. Something like below:
 
-![image](https://github.com/sillyjason/agentic_customer_service_with_couchbase/assets/54433200/ea02047c-973e-4648-a1b0-5be85acd17b2)
+![image](https://github.com/user-attachments/assets/30650f20-1057-404a-b1bd-a60e2edf261c)
+
 
 <br>
 
 Another thinking is, why don't we leverage Couchbase for this? 
+
+
+![image](https://github.com/user-attachments/assets/d5941320-fc06-431a-bffb-6ff8778a4e54)
 
 
 <br><br>
