@@ -86,15 +86,21 @@ Run the script for setting up GSI (global secondary index) and the initial docum
 python3 setupdata.py 
 ```
 
+<br><br>
 
 
 ## Couchbase Tour
 
 <br>
 
-Right now we have almost everything we need to get the engine running. Log in Couchbase cluter, go to Eventing tab, and Deploy all 3 functions. 
+Right now we have almost everything we need to get the engine running. Log in Couchbase cluter, go to **Eventing** tab, and Deploy all 3 functions. 
 
 
 ![image](https://github.com/user-attachments/assets/750e5304-76ab-4719-94be-a0f6cc9afe09)
+
+
+<br>
+
+Go to Documents tab, 
 
 
