@@ -20,8 +20,7 @@ Another thinking is, why don't we leverage Couchbase for this?
 
 ## Setup
 
-
-<br><br>
+<br>
 
 
 Set up a Couchbase cluster with the following service groups. If you are not familiar with Couchbase cluster setup, follow [this](https://docs.couchbase.com/server/current/manage/manage-nodes/create-cluster.html). I'm using 5 virtual machines X 8vCPU & 32GB of memory, with the following Service Group configuration: 
@@ -139,5 +138,10 @@ Now let's trigger the other timer for aggregation.  Go to **eventing._default.on
 
 
 <br>
+
+Wait one more minute to see aggregation result every minute popping up: 
+
+![image](https://github.com/user-attachments/assets/07e2ce1e-290d-4003-bc78-0afb51923fc6)
+
 
 
