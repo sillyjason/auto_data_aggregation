@@ -51,7 +51,7 @@ git clone https://github.com/sillyjason/auto_data_aggregation
 
 <br>
 
-create a .env file with the following env variables
+At the project root directory, create a .env file with the following env variables
 ```
 # EE Environment Variables 
 EE_HOSTNAME= //the hostname of any node that has Data service deployed. 
@@ -83,7 +83,18 @@ python3 setupeventing.py
 
 Run the script for setting up GSI (global secondary index) and the initial documents needed as document triggers 
 ```
-python3 setupeventing.py 
+python3 setupdata.py 
 ```
+
+
+
+## Couchbase Tour
+
+<br>
+
+Right now we have almost everything we need to get the engine running. Log in Couchbase cluter, go to Eventing tab, and Deploy all 3 functions. 
+
+
+![image](https://github.com/user-attachments/assets/750e5304-76ab-4719-94be-a0f6cc9afe09)
 
 
