@@ -79,8 +79,8 @@ python3 setupeventing.py
 
 <br>
 
->🙌🏻 recurr_ingestion_trigger, together with recur_final_ingestion is for creating the recurring timer for data ingestion job. In real time you would use a streaming tool for the job but for simplicity of our case, we'll delegate even this to Couchbase Eventing.
->recur_aggregation_trigger is for creating the recurring job for aggregation every minute. 
+>🙌🏻 **recurr_ingestion_trigger**, together with **recur_final_ingestion** is for creating the recurring timer for data ingestion job. In real time you would use a streaming tool for the job but for simplicity of our case, we'll delegate even this to Couchbase Eventing.
+> **recur_aggregation_trigger** is for creating the recurring job for aggregation every minute. 
 
 <br>
 
