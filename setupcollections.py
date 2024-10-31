@@ -9,7 +9,6 @@ load_dotenv()
 #get the environment variables
 EE_HOSTNAME = os.getenv("EE_HOSTNAME")
 EVENTING_HOSTNAME = os.getenv("EVENTING_HOSTNAME")
-SEARCH_HOSTNAME = os.getenv("SEARCH_HOSTNAME")
 CB_USERNAME = os.getenv("CB_USERNAME")
 CB_PASSWORD = os.getenv("CB_PASSWORD")
 
@@ -65,7 +64,7 @@ def create_collection(bucket_name, scope_name, collection_name):
 
 
 #create bucket main 
-BUCKET_MAIN_ID = create_bucket("main", 15000)
+BUCKET_MAIN_ID = create_bucket("main", 20000)
 
 #create bucket eventing
 BUCKET_EVENTING_ID = create_bucket("eventing", 200)

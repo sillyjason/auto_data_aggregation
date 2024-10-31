@@ -32,12 +32,19 @@ function RecurringTimerCallback(context) {
         COUNT(1) AS count,
         AVG(`amount`) AS average_amt,
         SUM(`amount`) AS total_amt,
-        {"sliver": SUM(CASE WHEN cust_type = "silver" THEN 1 ELSE 0 END) ,
+        {"silver": SUM(CASE WHEN cust_type = "silver" THEN 1 ELSE 0 END) ,
         "gold": SUM(CASE WHEN cust_type = "gold" THEN 1 ELSE 0 END),
         "platinum": SUM(CASE WHEN cust_type = "platinum" THEN 1 ELSE 0 END)
-        } AS category
+        } AS category,
+        MILLIS_TO_STR(e * 1000) as end_time_fmt,
+        MILLIS_TO_STR(s * 1000) as start_time_fmt,
+        MILLIS_TO_STR(n * 1000) as trigger_time_fmt,
+        e as end_time,
+        s as start_time,
+        n as trigger_time
     FROM `main`.`data`.`data`
     WHERE `time_unix` BETWEEN s AND e
+    GROUP BY e, s, n;
     
     for (var item of results) {   // Stream results using 'for' iterator.
         const now = new Date();

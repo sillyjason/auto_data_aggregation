@@ -1,13 +1,19 @@
 function generateData() {
     const custTypes = ["silver", "gold", "platinum"];
 
+    //get random time between -30 and 30 seconds from now
     const now = new Date();
+    const randomSeconds = Math.floor(Math.random() * 61) - 30; // Random number between -30 and 30
+    now.setSeconds(now.getSeconds() + randomSeconds);
     const time = now.toISOString().slice(0, 16).replace('T', ' ');
     const timeUnix = Math.floor(now.getTime() / 1000);
+    
+    //generate random user_id, amount and cust_type
     const userId = Math.floor(Math.random() * (99999 - 10000 + 1)) + 10000;
     const amount = Math.floor(Math.random() * (999 - 10 + 1)) + 10;
     const custType = custTypes[Math.floor(Math.random() * custTypes.length)];
 
+    //create JSON object
     const jsonObject = {
         time: time,
         time_unix: timeUnix,
@@ -33,6 +39,7 @@ function OnUpdate(doc, meta) {
     
     for (let i = 0; i < count; i++) {
         var uuid = generateUUID()
+        // generate final data in data collection "count" times
         data_collection[uuid] = generateData()
     }
 }

@@ -9,7 +9,6 @@ load_dotenv()
 #get the environment variables
 EE_HOSTNAME = os.getenv("EE_HOSTNAME")
 EVENTING_HOSTNAME = os.getenv("EVENTING_HOSTNAME")
-SEARCH_HOSTNAME = os.getenv("SEARCH_HOSTNAME")
 CB_USERNAME = os.getenv("CB_USERNAME")
 CB_PASSWORD = os.getenv("CB_PASSWORD")
 

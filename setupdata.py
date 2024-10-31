@@ -8,13 +8,12 @@ load_dotenv()
 #get the environment variables
 EE_HOSTNAME = os.getenv("EE_HOSTNAME")
 EVENTING_HOSTNAME = os.getenv("EVENTING_HOSTNAME")
-SEARCH_HOSTNAME = os.getenv("SEARCH_HOSTNAME")
 CB_USERNAME = os.getenv("CB_USERNAME")
 CB_PASSWORD = os.getenv("CB_PASSWORD")
 
 
 # setup GSI on `time_unix` field
-run_query("CREATE INDEX `doc_timeunix` ON `main`. `data`.`data`(`time_unix`)")
+run_query("create index time_amount_category on `main`.`data`.`data`(`time_unix`, `amount`, `cust_type`)")
 
 
 # initialize the 2 documents for triggering the recurring timers
