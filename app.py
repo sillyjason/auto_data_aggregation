@@ -38,7 +38,7 @@ def my_function():
     """
     
     result = run_query(query)
-    print('result: ', result)
+    # print('result: ', result)
     
     # print time difference
     post_time_millis = int(time.time() * 1000)    
