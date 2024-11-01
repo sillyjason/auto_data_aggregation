@@ -176,6 +176,9 @@ From the result page, select **Table** tab to make it less painful to see the ti
 
 ![image](https://github.com/user-attachments/assets/0283e443-87c8-49cc-9d16-0286f162c7c6)
 
+<br>
+
+>🙌🏻 To understand how the timers are scheduled, the logics are contained within the Javascript codes of the respective function under **Eventing** tab. 
 
 <br>
 
