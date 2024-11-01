@@ -1,19 +1,19 @@
 function CreateRecurringTimer(context) {
     log('From CreateRecurringTimer: creating timer', context.mode, context.id);
-    // Create a timestamp 60 seconds from now
-    var sixtySecFromNow = new Date(); // Get current time & add 60 sec. to it.
-    sixtySecFromNow.setSeconds(sixtySecFromNow.getSeconds() + 60);
+    
+    // Create timestamp for next minute 
+    var nextMinute = new Date(); 
+    const currentSeconds = nextMinute.getSeconds();
+
+    if (currentSeconds !== 0) {
+        nextMinute.setSeconds(0);
+        nextMinute.setMinutes(nextMinute.getMinutes() + 1);
+    }
+   
     // Create a document to use as out for our context
-    createTimer(RecurringTimerCallback, sixtySecFromNow, context.id, context);
+    createTimer(RecurringTimerCallback, nextMinute, context.id, context);
 }
 
-function generateUUID() {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-        const r = Math.random() * 16 | 0;
-        const v = c === 'x' ? r : (r & 0x3 | 0x8);
-        return v.toString(16);
-    });
-}
 
 function RecurringTimerCallback(context) {
     log('From RecurringTimerCallback: timer fired', context);
@@ -29,30 +29,23 @@ function RecurringTimerCallback(context) {
         ,e as (n-o)
         ,s as (e-60)
     SELECT
+        DATE_TRUNC_STR(DATE_ADD_STR(NOW_STR(),-1,"minute"),"minute") AS start_time_fmt,
+        DATE_TRUNC_STR(NOW_STR(),"second") AS trigger_time_fmt,
+        trunc(now_millis()/1000) AS trigger_time,
+        trunc(now_millis()/1000) - trunc(now_millis()/1000)%60 - 60 AS start_time,
         COUNT(1) AS count,
         AVG(`amount`) AS average_amt,
         SUM(`amount`) AS total_amt,
         {"silver": SUM(CASE WHEN cust_type = "silver" THEN 1 ELSE 0 END) ,
         "gold": SUM(CASE WHEN cust_type = "gold" THEN 1 ELSE 0 END),
         "platinum": SUM(CASE WHEN cust_type = "platinum" THEN 1 ELSE 0 END)
-        } AS category,
-        MILLIS_TO_STR(e * 1000) as end_time_fmt,
-        MILLIS_TO_STR(s * 1000) as start_time_fmt,
-        MILLIS_TO_STR(n * 1000) as trigger_time_fmt,
-        e as end_time,
-        s as start_time,
-        n as trigger_time
+        } AS category
     FROM `main`.`data`.`data`
-    WHERE `time_unix` BETWEEN s AND e
-    GROUP BY e, s, n;
+    WHERE `time_unix` BETWEEN s AND e;
     
+
     for (var item of results) {   // Stream results using 'for' iterator.
-        const now = new Date();
-        const time = now.toISOString().slice(0, 16).replace('T', ' ');
-        log("time: ", time, "aggregation result: ", item)
-        item['time'] = time
-        var uuid = generateUUID()
-        minute_collection[uuid] = item
+        minute_collection[item.start_time_fmt] = item
     }
     
     results.close()

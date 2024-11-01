@@ -64,7 +64,7 @@ def create_collection(bucket_name, scope_name, collection_name):
 
 
 #create bucket main 
-BUCKET_MAIN_ID = create_bucket("main", 20000)
+BUCKET_MAIN_ID = create_bucket("main", 16000)
 
 #create bucket eventing
 BUCKET_EVENTING_ID = create_bucket("eventing", 200)
