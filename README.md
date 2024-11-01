@@ -61,6 +61,12 @@ CB_USERNAME= // username for admin credentials to Couchbase cluster
 CB_PASSWORD= // password for admin credentials to Couchbase cluster
 ```
 
+<br>
+
+Install Python dependencies
+```
+pip install -r requirements.txt
+```
 
 <br>
 
@@ -148,5 +154,13 @@ Wait one more minute to see aggregation result every minute popping up:
 
 ![image](https://github.com/user-attachments/assets/07e2ce1e-290d-4003-bc78-0afb51923fc6)
 
+
+
+
+## Being Wall-clock Accurate 
+
+<br>
+
+Couchbase recurring timer, despite being convenient to set up and manage, does not guarantee wall-clock accuracy. That is to say, if you require that the aggregation is fired at exactly the beginning nanoseond of the minute, Couchbase Eventing might not be the right answer. In this case, you can just hold a light weight third-party app that schedules the job more punctually, and sends a query to Couchbase to finish the job. An example is set up in **app.py**. 
 
 
