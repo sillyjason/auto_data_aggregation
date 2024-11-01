@@ -163,7 +163,7 @@ Let's run some queries to see when exactly are our Eventing timers fired.
 
 <br>
 
-Go to **Query** tab, and let's fire the following: 
+Go to **Query** tab, and let's fire the following. Yes, Couchbase is a NoSQL database that supports SQL.
 ```
 select start_time_fmt, trigger_time_fmt 
 from `main`.`aggregation`.`minute`
@@ -182,11 +182,13 @@ From the result page, select **Table** tab to make it less painful to see the ti
 
 <br>
 
-Couchbase recurring timer, despite being convenient to set up and manage, does not guarantee [wall-clock accuracy](https://docs.couchbase.com/server/current/eventing/eventing-timers.html#sharding-of-timers). That is to say, if you require that the aggregation is fired at exactly the beginning nanoseond of the minute, Couchbase Eventing might not be the right answer. In this case, you can just hold a light weight third-party app that schedules the job more punctually, and sends a query to Couchbase to finish the job. An example is set up in **app.py**. 
+Couchbase recurring timer, despite being convenient to set up and manage, does not guarantee [wall-clock accuracy](https://docs.couchbase.com/server/current/eventing/eventing-timers.html#sharding-of-timers). That is to say, if the requirement is the aggregation function be fired at exactly the beginning nanoseond of the minute, Couchbase Eventing might not be the best option. 
+
+In this case, you can just create a light weight app that schedules the job more punctually to send queries to Couchbase, who processes it lightening fast. An example is set up in **app.py**. 
 
 <br>
 
-The function to be fired in the example fire the following query at Couchbase Query service, which does the aggregation and directly insert output into a collection. 
+The function in the example fires the following query to Couchbase, which performs the aggregation, and directly insert output into a collection. 
 
 ```
 INSERT INTO `main`.`aggregation`.`minute_api` (KEY k, VALUE v)
