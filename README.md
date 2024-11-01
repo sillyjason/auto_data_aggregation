@@ -5,9 +5,9 @@ It's common to see high volume data ingestion while needing to have a mechanism 
 ![image](https://github.com/user-attachments/assets/30650f20-1057-404a-b1bd-a60e2edf261c)
 
 
-<br>
+<br><br>
 
-Another thinking is, why don't we leverage Couchbase for this? 
+Another thinking: why don't we leverage Couchbase for this? 
 
 
 ![image](https://github.com/user-attachments/assets/d5941320-fc06-431a-bffb-6ff8778a4e54)
@@ -23,7 +23,7 @@ Another thinking is, why don't we leverage Couchbase for this?
 <br>
 
 
-Set up a single-node Couchbase cluster with **Data, Index, Query, Eventing** service deployed. If you are not familiar with Couchbase cluster setup, follow [this](https://docs.couchbase.com/server/current/manage/manage-nodes/create-cluster.html). I'm using **t2.2xlarge** with **8 vCPU** and **32GiB** of Memory. 
+Set up a single-node Couchbase cluster with **Data, Index, Query, Eventing** service deployed. If you are not familiar with Couchbase cluster setup, follow [this](https://docs.couchbase.com/server/current/manage/manage-nodes/create-cluster.html) documentation. I'm using **t2.2xlarge** with **8 vCPU** and **32GiB** of Memory. 
 
 >🙌🏻 This single-node deployment is really just for testing purposes. For any production workload you'd want at least 3 nodes (for Data service) or 2 nodes (for other Couchbase services) for High Availability services. It's also a good idea to leverage Couchbase's [multi-dimensional scaling](https://docs.couchbase.com/operator/current/concept-mds.html) for isolcated workloads deployment when necessary.
 
@@ -37,7 +37,7 @@ Set up a single-node Couchbase cluster with **Data, Index, Query, Eventing** ser
 <br>
 
 
-Clone the repo 
+Clone this repo 
 ```
 git clone https://github.com/sillyjason/auto_data_aggregation
 ```
@@ -47,8 +47,8 @@ git clone https://github.com/sillyjason/auto_data_aggregation
 At the project root directory, create a .env file with the following env variables
 ```
 # EE Environment Variables 
-EE_HOSTNAME= //the hostname of any node that has Data service deployed. 
-EVENTING_HOSTNAME= //the hostname of any node that has Eventing service deployed
+EE_HOSTNAME= // hostname of your Couchbase node
+EVENTING_HOSTNAME= // hostname of your Couchbase node
 
 #CB User Credential
 CB_USERNAME= // username for admin credentials to Couchbase cluster 
@@ -79,7 +79,8 @@ python3 setupeventing.py
 
 <br>
 
->🙌🏻 **recurr_ingestion_trigger**, together with **recur_final_ingestion** is for creating the recurring timer for data ingestion job. In real time you would use a streaming tool for the job but for simplicity of our case, we'll delegate even this to Couchbase Eventing.
+>🙌🏻 We'll call the Couchbase Rest API endpoints to set up 3 Eventing functions. **recurr_ingestion_trigger**, together with **recur_final_ingestion** is for creating the recurring timer for data ingestion job. In real time you would use a streaming tool for the job but for simplicity of our case, we'll delegate even this to Couchbase Eventing.
+>
 > **recur_aggregation_trigger** is for creating the recurring job for aggregation every minute. 
 
 <br>
