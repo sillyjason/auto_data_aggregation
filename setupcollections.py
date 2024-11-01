@@ -79,6 +79,7 @@ if BUCKET_MAIN_ID is not None:
 
     if scope_aggregation_created:
         create_collection("main", "aggregation", "minute")
+        create_collection("main", "aggregation", "minute_api")
 
 
 if BUCKET_EVENTING_ID is not None:
