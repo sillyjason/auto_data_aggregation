@@ -23,15 +23,9 @@ Another thinking is, why don't we leverage Couchbase for this?
 <br>
 
 
-Set up a Couchbase cluster with the following service groups. If you are not familiar with Couchbase cluster setup, follow [this](https://docs.couchbase.com/server/current/manage/manage-nodes/create-cluster.html). I'm using 5 virtual machines X 8vCPU & 32GB of memory, with the following Service Group configuration: 
+Set up a single-node Couchbase cluster with **Data, Index, Query, Eventing** service deployed. If you are not familiar with Couchbase cluster setup, follow [this](https://docs.couchbase.com/server/current/manage/manage-nodes/create-cluster.html). I'm using **t2.2xlarge** with **8 vCPU** and **32GiB** of Memory. 
 
-Service Group 1: 
-- Index (5GB of RAM) + Query (1GB of RAM) + Data (rest of RAM)   
-- 3 nodes 
-
-Service Group 2: 
-- Eventing   
-- 2 nodes 
+>🙌🏻 This single-node deployment is really just for testing purposes. For any production workload you'd want at least 3 nodes (for Data service) or 2 nodes (for other Couchbase services) for High Availability services. It's also a good idea to leverage Couchbase's [multi-dimensional scaling](https://docs.couchbase.com/operator/current/concept-mds.html) for isolcated workloads deployment when necessary.
 
 
 <br><br>
@@ -161,7 +155,11 @@ Wait one more minute to see aggregation result every minute popping up:
 
 <br>
 
-Couchbase recurring timer, despite being convenient to set up and manage, does not guarantee wall-clock accuracy. That is to say, if you require that the aggregation is fired at exactly the beginning nanoseond of the minute, Couchbase Eventing might not be the right answer. In this case, you can just hold a light weight third-party app that schedules the job more punctually, and sends a query to Couchbase to finish the job. An example is set up in **app.py**. 
+Let's select
+
+<br>
+
+Couchbase recurring timer, despite being convenient to set up and manage, does not guarantee [wall-clock accuracy](https://docs.couchbase.com/server/current/eventing/eventing-timers.html#sharding-of-timers). That is to say, if you require that the aggregation is fired at exactly the beginning nanoseond of the minute, Couchbase Eventing might not be the right answer. In this case, you can just hold a light weight third-party app that schedules the job more punctually, and sends a query to Couchbase to finish the job. An example is set up in **app.py**. 
 
 <br>
 
