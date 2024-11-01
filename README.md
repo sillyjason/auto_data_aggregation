@@ -1,5 +1,7 @@
 # Use Couchbase with a Recurring Timer for Auto Aggregation
 
+<br><br>
+
 It's common to see high volume data ingestion while needing to have a mechanism to automatically aggregate every minute / hour, or any other defined time span, for real time insights. The conventional thinking is to use Kafka to stream data for a raw transaction table/collection, and additionally set up another client with a cron job to slicing the data, do aggregation, and write back to another table. Something like below:
 
 ![image](https://github.com/user-attachments/assets/2a6a9f1f-c818-4ca2-85fc-249f96b8af67)
@@ -157,7 +159,23 @@ Wait one more minute to see aggregation result every minute popping up:
 
 <br>
 
-Let's select
+Let's run some queries to see when exactly are our Eventing timers fired. 
+
+<br>
+
+Go to **Query** tab, and let's fire the following: 
+```
+select start_time_fmt, trigger_time_fmt 
+from `main`.`aggregation`.`minute`
+order by trigger_time
+```
+
+<br>
+
+From the result page, select **Table** tab to make it less painful to see the timings. **trigger_time_fmt** records when the eventing is fired and obviously, despite being intentionally scheduled at the beginning of every minute, there is 3-7 minutes's delay.
+
+![image](https://github.com/user-attachments/assets/0283e443-87c8-49cc-9d16-0286f162c7c6)
+
 
 <br>
 
