@@ -163,4 +163,53 @@ Wait one more minute to see aggregation result every minute popping up:
 
 Couchbase recurring timer, despite being convenient to set up and manage, does not guarantee wall-clock accuracy. That is to say, if you require that the aggregation is fired at exactly the beginning nanoseond of the minute, Couchbase Eventing might not be the right answer. In this case, you can just hold a light weight third-party app that schedules the job more punctually, and sends a query to Couchbase to finish the job. An example is set up in **app.py**. 
 
+<br>
+
+The function to be fired in the example fire the following query at Couchbase Query service, which does the aggregation and directly insert output into a collection. 
+
+```
+INSERT INTO `main`.`aggregation`.`minute_api` (KEY k, VALUE v)
+    SELECT v.start_time k, v
+    FROM
+    (
+        with n as (trunc(now_millis()/1000))
+            ,o as (n%60)
+            ,e as (n-o)
+            ,s as (e-60)
+        SELECT
+            DATE_TRUNC_STR(DATE_ADD_STR(NOW_STR(),-1,"minute"),"minute") AS start_time,
+            DATE_TRUNC_STR(NOW_STR(),"second") AS trigger_time,
+            COUNT(1) AS count,
+            AVG(`amount`) AS average_amt,
+            SUM(`amount`) AS total_amt,
+            {"sliver": SUM(CASE WHEN cust_type = "silver" THEN 1 ELSE 0 END) ,
+            "gold": SUM(CASE WHEN cust_type = "gold" THEN 1 ELSE 0 END),
+            "platinum": SUM(CASE WHEN cust_type = "platinum" THEN 1 ELSE 0 END)
+            } AS category
+        FROM `main`.`data`.`data`
+        WHERE `time_unix` BETWEEN s AND e
+    ) v
+```
+
+<br>
+
+Note the SDK cycle time of this query is printed with 
+```
+print('post_time_millis:', post_time_millis, "time_taken: ", post_time_millis - current_time_millis)
+```
+
+<br>
+
+It generally is lightening fast. In my case, the time it takes it averaging ~300 milliseconds. 
+
+<br>
+
+Go to Couchbase console, under **Documents** tab, switch to **`main`.`aggregation`.`minute_api`**, and see the results being written.
+
+<br>
+
+![image](https://github.com/user-attachments/assets/9570f8e8-ee86-4996-9243-ca14924996d8)
+
+
+
 
