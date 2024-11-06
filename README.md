@@ -172,7 +172,7 @@ order by trigger_time
 
 <br>
 
-From the result page, select **Table** tab to make it less painful to see the timings. **trigger_time_fmt** records when the eventing is fired and obviously, despite being intentionally scheduled at the beginning of every minute, there is 3-7 minutes's delay.
+From the result page, select **Table** tab to make it less painful to see the timings. **trigger_time_fmt** records when the eventing is fired and obviously, despite being intentionally scheduled at the beginning of every minute, there is 3-7 seconds' delay.
 
 ![image](https://github.com/user-attachments/assets/0283e443-87c8-49cc-9d16-0286f162c7c6)
 
@@ -217,7 +217,7 @@ INSERT INTO `main`.`aggregation`.`minute_api` (KEY k, VALUE v)
 
 <br>
 
-With RETURNING DATE_TRUNC_STR(DATE_ADD_STR(NOW_STR(),-1,"minute"),"minute") AS start_time, we're capturing the document key, with which we can insert the time of this task's initiation time into the same document with Couchbase's [sub-document insert](https://docs.couchbase.com/python-sdk/current/howtos/subdocument-operations.html).
+With **RETURNING DATE_TRUNC_STR(DATE_ADD_STR(NOW_STR(),-1,"minute"),"minute")** AS start_time, we're capturing the document key, with which we can insert the time of this task's initiation time into the same document with Couchbase's [sub-document insert](https://docs.couchbase.com/python-sdk/current/howtos/subdocument-operations.html).
 
 <br>
 
@@ -245,7 +245,6 @@ from minute_api
 order by start_time desc
 ```
 
-
 <br>
 
 >🙌🏻 **META().cas** is the server timestamp of last update in nanosecond; derived from META().cas, doc_available_time_fmt is the time of doc being available at precision of milliseconds – indicating how many ms elapsed since the beginning of the minute.
@@ -253,6 +252,9 @@ order by start_time desc
 > **sender_task_start_time** is when the external timer started the task
 >
 > **sdk_cycle_time** is the time it takes Couchbase to process and query and make ready the output document (including the time it takes for CB server to receive the request). So obviously it's taking Couchbase less than 400ms to run a query that aggregates 90,000+ documents and persist output with just 1 node of minimum resources.
+
+
+<br>
 
 
 ![image](https://github.com/user-attachments/assets/8b2f777a-1513-4137-a16d-4c7a4fb374ef)
