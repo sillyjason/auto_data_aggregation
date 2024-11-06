@@ -1,4 +1,4 @@
-# Use Couchbase with a Recurring Timer for Auto Aggregation ⏰
+# ⏰ Use Couchbase with a Recurring Timer for Auto Aggregation ⏰
 
 <br><br>
 
