@@ -1,4 +1,4 @@
-![image](https://github.com/user-attachments/assets/e82f5bf6-1dcd-40bb-8ffb-9721e8da3b19)# Use Couchbase with a Recurring Timer for Auto Aggregation
+# Use Couchbase with a Recurring Timer for Auto Aggregation
 
 <br><br>
 
