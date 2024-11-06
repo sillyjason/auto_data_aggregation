@@ -1,4 +1,4 @@
-# Use Couchbase with a Recurring Timer for Auto Aggregation
+![image](https://github.com/user-attachments/assets/e82f5bf6-1dcd-40bb-8ffb-9721e8da3b19)# Use Couchbase with a Recurring Timer for Auto Aggregation
 
 <br><br>
 
@@ -248,11 +248,17 @@ order by start_time desc
 
 <br>
 
->🙌🏻 META().cas is the server timestamp of last update in nanosecond; derived from META().cas, doc_available_time_fmt is the time of doc being available at precision of milliseconds – indicating how many ms elapsed since the beginning of the minute.
+>🙌🏻 **META().cas** is the server timestamp of last update in nanosecond; derived from META().cas, doc_available_time_fmt is the time of doc being available at precision of milliseconds – indicating how many ms elapsed since the beginning of the minute.
+>
+> **sender_task_start_time** is when the external timer started the task
+>
+> **sdk_cycle_time** is the time it takes Couchbase to process and query and make ready the output document (including the time it takes for CB server to receive the request). So obviously it's taking Couchbase less than 400ms to run a query that aggregates 90,000+ documents and persist output with just 1 node of minimum resources.
+
+
+![image](https://github.com/user-attachments/assets/8b2f777a-1513-4137-a16d-4c7a4fb374ef)
 
 
 
-![image](https://github.com/user-attachments/assets/875a1bda-ff13-4dce-9d6e-574128d43ace)
 
 
 
