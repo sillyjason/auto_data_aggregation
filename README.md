@@ -195,35 +195,29 @@ INSERT INTO `main`.`aggregation`.`minute_api` (KEY k, VALUE v)
     SELECT v.start_time k, v
     FROM
     (
-        with n as (trunc(now_millis()/1000))
-            ,o as (n%60)
-            ,e as (n-o)
-            ,s as (e-60)
+        WITH n AS (TRUNC(NOW_MILLIS()/1000))
+            ,o AS (n%60)
+            ,e AS (n-o)
+            ,s AS (e-60)
         SELECT
             DATE_TRUNC_STR(DATE_ADD_STR(NOW_STR(),-1,"minute"),"minute") AS start_time,
             DATE_TRUNC_STR(NOW_STR(),"second") AS trigger_time,
             COUNT(1) AS count,
             AVG(`amount`) AS average_amt,
             SUM(`amount`) AS total_amt,
-            {"sliver": SUM(CASE WHEN cust_type = "silver" THEN 1 ELSE 0 END) ,
+            {"silver": SUM(CASE WHEN cust_type = "silver" THEN 1 ELSE 0 END),
             "gold": SUM(CASE WHEN cust_type = "gold" THEN 1 ELSE 0 END),
             "platinum": SUM(CASE WHEN cust_type = "platinum" THEN 1 ELSE 0 END)
             } AS category
         FROM `main`.`data`.`data`
         WHERE `time_unix` BETWEEN s AND e
     ) v
+    RETURNING DATE_TRUNC_STR(DATE_ADD_STR(NOW_STR(),-1,"minute"),"minute") AS start_time
 ```
 
 <br>
 
-Note the SDK cycle time of this query is printed with 
-```
-print('post_time_millis:', post_time_millis, "time_taken: ", post_time_millis - current_time_millis)
-```
-
-<br>
-
-It generally is lightening fast. In my case, the time it takes it averaging ~300 milliseconds. 
+With RETURNING DATE_TRUNC_STR(DATE_ADD_STR(NOW_STR(),-1,"minute"),"minute") AS start_time, we're capturing the document key, with which we can insert the time of this task's initiation time into the same document with Couchbase's [sub-document insert](https://docs.couchbase.com/python-sdk/current/howtos/subdocument-operations.html).
 
 <br>
 
@@ -231,7 +225,14 @@ Go to Couchbase console, under **Documents** tab, switch to **`main`.`aggregatio
 
 <br>
 
-![image](https://github.com/user-attachments/assets/9570f8e8-ee86-4996-9243-ca14924996d8)
+![image](https://github.com/user-attachments/assets/23b66a3e-b403-4f31-b440-191914065db7)
+
+<br><br>
+
+
+# Let's Do Some Digging
+
+<br>
 
 
 
