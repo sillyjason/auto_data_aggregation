@@ -4,12 +4,13 @@ from couchbase.options import SearchOptions
 from dotenv import load_dotenv
 import uuid
 from couchbase.cluster import Cluster
-from couchbase.options import ClusterOptions
+from couchbase.options import ClusterOptions, QueryOptions
 from couchbase.auth import PasswordAuthenticator
 from datetime import timedelta
 import os 
 import couchbase.subdocument as SD
 from sharedfunctions.print import print_success
+from couchbase.n1ql import QueryScanConsistency
 
 
 load_dotenv()
@@ -145,9 +146,11 @@ def mutliple_subdoc_upsert(bucket, scope, collection, doc_id, path_value_dict):
         return None
 
 
-def run_query(query):
+def run_query(query, scanConsistency=False):
     try:
-        result = cluster.query(query).execute()
+        queryOptions = QueryOptions(scan_consistency=QueryScanConsistency.REQUEST_PLUS if scanConsistency else QueryScanConsistency.NOT_BOUNDED) 
+        
+        result = cluster.query(query, queryOptions).execute()
         print(f"Query successful: {query}, result: {result}")
         return result
         
