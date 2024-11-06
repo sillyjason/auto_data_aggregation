@@ -161,7 +161,7 @@ Wait one more minute to see aggregation result every minute popping up:
 BUT - there's one catch. If you require the timers to be fired with "wall-clock" accuracy, read on.
 
 
-<br>
+<br><br>
 
 
 # Being Wall-clock Accurate 
