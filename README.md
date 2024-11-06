@@ -155,7 +155,7 @@ Wait one more minute to see aggregation result every minute popping up:
 
 
 
-## Being Wall-clock Accurate 
+# Being Wall-clock Accurate 
 
 <br>
 
@@ -230,10 +230,29 @@ Go to Couchbase console, under **Documents** tab, switch to **`main`.`aggregatio
 <br><br>
 
 
-# Let's Do Some Digging
+## Let's Do Some Digging
 
 <br>
 
+Go to **Query** tab, and run the following:
+```
+select meta().id, 
+sender_task_start_time, 
+TRUNC(META().cas/1000000) - sender_task_start_time as sdk_cycle_time, 
+MILLIS_TO_UTC(META().cas/1000000) as doc_available_time_fmt,
+TRUNC(META().cas/1000000) as doc_available_time
+from minute_api
+order by start_time desc
+```
+
+
+<br>
+
+>🙌🏻 META().cas is the server timestamp of last update in nanosecond; derived from META().cas, doc_available_time_fmt is the time of doc being available at precision of milliseconds – indicating how many ms elapsed since the beginning of the minute.
+
+
+
+![image](https://github.com/user-attachments/assets/875a1bda-ff13-4dce-9d6e-574128d43ace)
 
 
 
