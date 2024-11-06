@@ -1,4 +1,4 @@
-# Use Couchbase with a Recurring Timer for Auto Aggregation
+# Use Couchbase with a Recurring Timer for Auto Aggregation ⏰
 
 <br><br>
 
@@ -153,6 +153,15 @@ Wait one more minute to see aggregation result every minute popping up:
 ![image](https://github.com/user-attachments/assets/07e2ce1e-290d-4003-bc78-0afb51923fc6)
 
 
+<br>
+
+
+🎊 Voilà! With Couchbase Eventing, we don't even need an external server for scheduling aggregation tasks every defined period. Couchbase serves as a reliable and scaling platform for data operations. 
+
+BUT - there's one catch. If you require the timers to be fired with "wall-clock" accuracy, read on.
+
+
+<br>
 
 
 # Being Wall-clock Accurate 
