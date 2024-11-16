@@ -140,11 +140,12 @@ Go to **Eventing** tab, and let's deploy the function **recur_aggregation_trigge
 
 <br>
 
-![image](https://github.com/user-attachments/assets/34ca0f45-d863-4b24-be52-41cbd10cbefa)
+![Screenshot 2024-11-16 at 9 03 31 PM](https://github.com/user-attachments/assets/4a7f3b72-d0a8-4b67-b63a-baca07b1fb27)
+
 
 Now when we go to **Documents** tab, select **data.aggregation.m_rt_all** namespace, the minutely aggregation result show already be there.  
 
-![image](https://github.com/user-attachments/assets/510cb088-6903-4122-bbc3-7edcfca12a66)
+![Screenshot 2024-11-16 at 9 04 07 PM](https://github.com/user-attachments/assets/6719fa79-0dd6-4efa-b147-d1e86ad094f7)
 
 
 <br>
@@ -167,7 +168,8 @@ How do we make sure the query is not missing out on any transactions? Easy. Couc
 
 Say, for this minute **10:48**. The query says there are 5600 transactions for this minute (the gap of 400 from 6000) is as mentioned above, my hardware resource is limited. 
 
-![image](https://github.com/user-attachments/assets/fb8a2af8-e1e3-404a-8d21-20b1ed807698)
+![Screenshot 2024-11-16 at 9 05 01 PM](https://github.com/user-attachments/assets/2e0f24f1-fa0e-45fd-aa8a-757582755065)
+)
 
 <br>
 
@@ -182,7 +184,7 @@ WHERE time_str LIKE "2024-11-16 10:48%"
 
 Bingo.
 
-![image](https://github.com/user-attachments/assets/5f9efae1-5bbd-4e42-b124-8d1b06150e7b)
+![Screenshot 2024-11-16 at 9 05 37 PM](https://github.com/user-attachments/assets/8eee25bc-2c57-4d76-b7f1-8eeac83399b5)
 
 
 <br><br>
