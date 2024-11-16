@@ -206,7 +206,7 @@ order by trigger_time
 
 <br>
 
-Switch to **Table** view. Notice anything? The **trigger_time_fmt** indicates when this function is triggered. And we can see for every minute (10:35, for example), the aggregation needs to wait ~5 seconds past the next minute to trigger (10:36:06, in the same example). Of course it's safe to assume the process of query and subsequent insertion of the output will happen even later. 
+Switch to **Table** view. Notice anything? The **trigger_time_fmt** indicates when this function is triggered. And we can see for every minute (10:35, for example), the aggregation needs to wait ~5 seconds past the next minute to trigger (10:36:06, in the same example). Of course it's safe to assume the process of query and subsequent insertion of the output will happen even later. Let's stop the ingestion script for now.
 
 ![Screenshot 2024-11-16 at 9 07 25 PM](https://github.com/user-attachments/assets/196b0737-7402-4b15-8290-68cfd6b6f4b7)
 
@@ -287,11 +287,11 @@ Let's break it down:
 
 <br>
 
-So, an aggregation every minute is ready at ~500 milliseconds passed the minute.
+So, an aggregation every minute is ready at ~500 milliseconds passed the minute. Let's stop the data ingestion script do some reflection.
 
 <br>
 
-Is this a perfect approach? Depends. For one, 500ms might not be a satisfactory latency in some cases. More importantly, Couchbase Query service plus Index Service is used for aggregation, and although through Couchbase Database Change Protocol, data mutations are subscribed by [Indexers](https://docs.couchbase.com/server/current/learn/services-and-indexes/indexes/index-lifecycle.html#index-updates) to update indexes in near-real-time, they adhere to a **eventual-consistency** pattern. In situations where there's huge amount of data mutations and limited resources, it can take a while for update the index. While Couchbase Query provides [SCAN CONSISTENCY](https://docs.couchbase.com/server/current/n1ql/n1ql-manage/query-settings.html#scan_consistency) for queries, we don't want the index building to becomes bottlenecks when speed is paramount.
+Is it the perfect approach? Depends. For one, 500ms might not be a satisfactory latency in some cases. More importantly, Couchbase Query service plus Index Service is used for aggregation, and although through Couchbase Database Change Protocol, data mutations are subscribed by [Indexers](https://docs.couchbase.com/server/current/learn/services-and-indexes/indexes/index-lifecycle.html#index-updates) to update indexes in near-real-time, they adhere to a **eventual-consistency** pattern. In situations where there's huge amount of data mutations and limited resources, it can take a while for update the index. While Couchbase Query provides [SCAN CONSISTENCY](https://docs.couchbase.com/server/current/n1ql/n1ql-manage/query-settings.html#scan_consistency) for queries, we don't want the index building to becomes bottlenecks when speed is paramount.
 
 > 🙌🏻 There's also a key distinction between client time and server time. We're implementing based on the former but there are also scenarios where the latter makes more sense. 
 
@@ -300,18 +300,33 @@ Is this a perfect approach? Depends. For one, 500ms might not be a satisfactory 
 
 # The Quickest Approach
 
-<br><br><br>
+<br><br>
 
 Is there a way to make sure the aggregation doc is there at the exact millisecond pass the minute? 
 
 Yes.
 
-![image](https://github.com/user-attachments/assets/13584fff-2104-48b6-9827-48b347990fae)
-
+![image](https://github.com/user-attachments/assets/1f6bd9d9-feda-47a5-bf5e-aa94148006d7)
 
 <br>
 
-Go to Couchbase console, under **Documents** tab, switch to **`main`.`aggregation`.`minute_api`**, and see the results being written.
+Couchbase is built for excellent scalability with **key-value** ops. Together with Eventing, we can capture mutations and perform aggregation logics, and concurrently update result extremely fast and reliably. That means we don't have the wait until the minute is passed to start working on the aggregation; rather, every new transaction is captured and aggregated instantly. Let's dig in (remember to shut down the timer.py scripts if you have not yet).
+
+<br>
+
+Let's flush again the bucket. Then, go to **Eventing** tab and deploy both functions **on_data_input** and **on_data_input_junior**.
+
+![Screenshot 2024-11-16 at 10 09 34 PM](https://github.com/user-attachments/assets/b7f56aec-3ca5-4ba7-9d0d-a1998c4d9384)
+
+<br>
+
+Once deployment is done, restart the data ingestion script. 
+```
+python3 dataingest.py
+```
+
+<br>
+
 
 <br>
 
