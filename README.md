@@ -226,6 +226,8 @@ Before we start talking about option 2, one important question to ask is, which 
 
 Let's first flush **main** bucket. 
 
+![image](https://github.com/user-attachments/assets/123e11db-55e5-42fc-be2f-ca23e5a40d79)
+
 <br>
 
 Go to **Eventing** tab, deploy **on_data_input**. Leave **on_data_input_junior**. This will write back a timestamp in metadata into the document itself, index the field, based on which we'll query this time.
