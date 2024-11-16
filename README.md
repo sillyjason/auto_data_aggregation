@@ -4,7 +4,7 @@
 
 It's common to see high volume of data ingestion plus having to run aggregate every minute or any other defined time span, for real time insights. To achieve this you probably need a database, a streaming tool, and some query tool. And even with this, most ofteh there're challenges with scalability and kv inserts, and speed of which to aggregate data since they keep coming in every second at large volume. Coupled with a high speed SLA, it becomes a headache for many an architects and DBAs. 
 
-This demo wants to show you a Couchbase point-of-view. There are more than 1 way to do it actually, we just need a good balance of dev simplify, service level, and scalability. In this demo we'll look at 3 approaches, what i call the [CONVENIENT](https://github.com/sillyjason/auto_data_aggregation/blob/main/README.md#lets-begin-with-the-convenient-approach) the [QUICK](https://github.com/sillyjason/auto_data_aggregation/blob/main/README.md#the-quick-approach), and the QUICKEST. 
+This demo wants to show you a Couchbase point-of-view. There are more than 1 way to do it actually, we just need a good balance of dev simplify, service level, and scalability. In this demo we'll look at 3 approaches, what i call the [CONVENIENT](https://github.com/sillyjason/auto_data_aggregation/blob/main/README.md#lets-begin-with-the-convenient-approach) the [QUICK](https://github.com/sillyjason/auto_data_aggregation/blob/main/README.md#the-quick-approach), and the [QUICKEST](https://github.com/sillyjason/auto_data_aggregation/blob/main/README.md#the-quickest-approach). 
 
 
 <br><br>
