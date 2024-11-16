@@ -102,8 +102,11 @@ python3 setupdata.py
 
 <br><br>
 
-Right now we have almost everything we need to get the engine running. Log in Couchbase cluter, go to **Eventing** tab, and Deploy all 3 functions. 
+Right now we have almost everything we need to get the engine running. Log in Couchbase cluter, go to **Eventing** tab, and let's deploy the function **recur_aggregation_trigger**. 
 
+>🙌🏻 Leave the other 2 functions alone at the moment. They'll serve their purpose later. 
+
+<br>
 
 ![image](https://github.com/user-attachments/assets/34ca0f45-d863-4b24-be52-41cbd10cbefa)
 
@@ -217,7 +220,22 @@ Couchbase recurring timer, despite being convenient to set up and manage, does n
 
 <br>
 
-In this case, you can just create a light weight app that schedules the job more punctually to send queries to Couchbase, who processes it lightening fast. An example is set up in **app.py**. 
+Before we start talking about option 2, one important question to ask is, which field should we look at: the timestamp on client, or the timestamp at server? In the approach above the client side timestamp was used. Now let's look at the server-side timestamp implementation. With Couchbase, it's done with Eventing too.   
+
+<br>
+
+Go to Eventing tab, 
+
+<br>
+
+Go back to IDE, open another Terminal window, and run the timer script which will trigger the aggregation exactly at the beginning milliseconds of the minute: 
+```
+python3 timer.py
+```
+
+<br>
+
+
 
 <br>
 
