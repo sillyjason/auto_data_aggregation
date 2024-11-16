@@ -207,7 +207,9 @@ order by trigger_time
 <br>
 
 Switch to **Table** view. Notice anything? The **trigger_time_fmt** indicates when this function is triggered. And we can see for every minute (10:35, for example), the aggregation needs to wait ~5 seconds past the next minute to trigger (10:36:06, in the same example). Of course it's safe to assume the process of query and subsequent insertion of the output will happen even later. 
-![image](https://github.com/user-attachments/assets/26ccf4fc-9129-47a9-95ea-3e75e7de22f0)
+
+![Screenshot 2024-11-16 at 9 07 25 PM](https://github.com/user-attachments/assets/196b0737-7402-4b15-8290-68cfd6b6f4b7)
+
 
 <br>
 
@@ -244,13 +246,6 @@ And we don't need the function recur_aggregation_trigger anymore. So let's de-ac
 
 <br>
 
-Go to **Index** tab, where you'll see the index being built. Notice we've indexed both server timestamp and client timestamp, along with other fields to build [Cover Index](https://docs.couchbase.com/server/current/n1ql/n1ql-language-reference/covering-indexes.html) which will make querying much more performant.
-
-![image](https://github.com/user-attachments/assets/c90633a1-1805-4ccd-afd9-f64275c3891b)
-
-
-<br>
-
 Go back to IDE, open another Terminal window, and run the timer script which will trigger the aggregation exactly at the beginning milliseconds of the minute: 
 ```
 python3 timer.py
@@ -258,12 +253,41 @@ python3 timer.py
 
 <br>
 
-The timer will trigger at the top of the next minute.
+Go grab a cub of your favourate espresso, come back and there should already be some minutely aggregations. 
+
 ![image](https://github.com/user-attachments/assets/756a8ecf-69c2-44f3-8dbe-725886b78d82)
 
 <br>
 
+Let's use a more convenient way to look up the data. Go to **Query** tab.
 
+```
+select meta().id, 
+count,
+sender_task_start_time, 
+MILLIS_TO_UTC(META().cas/1000000) as doc_available_time_fmt,
+trunc(META().cas/1000000 - str_to_millis(meta().id) - 60000) as readiness_time_delta
+from `main`.`aggregation`.`m_api_all`
+order by start_time
+```
+
+<br>
+
+Switch to Table view so results are more readable.
+
+![Screenshot 2024-11-16 at 9 25 59 PM](https://github.com/user-attachments/assets/36e770d9-43b9-45d7-8533-3a5ee21afa43)
+
+<br>
+
+Let's break it down: 
+- "count": how many transactions are captured in this aggregation
+- "doc_available_time_fmt": when this aggregation document became available on server. We're leveraging a metadata attribute here
+- "id": on which minute was this aggregation done
+- "readiness_time_delta": take the first row as an example. It was for 12:27:00, so once 12:28:00 is passed, this doc should be ready ASAP. The time delta since 12:28 is therefore calculated
+
+<br>
+
+So, an everage 
 
 <br>
 
