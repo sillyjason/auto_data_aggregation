@@ -151,7 +151,20 @@ Quite convenient eh? But let's do some checking and evaluation.
 <br><br>
 
 
-# Let's  
+## Query Data Integrity Check 
+
+<br>
+
+How do we make sure the query is not missing out on any transactions? Easy. Couchbase let's you query the data with SQL. 
+
+Say, for this minute **10:48**. The query says there are 5600 transactions for this minute (the gap of 400 from 6000) is as mentioned above, my hardware resource is limited. 
+![image](https://github.com/user-attachments/assets/fb8a2af8-e1e3-404a-8d21-20b1ed807698)
+
+<br>
+
+To verify, simply to go Query tab, and let's run the following: 
+```
+
 
 <br>
 
