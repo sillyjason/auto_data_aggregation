@@ -4,7 +4,8 @@
 
 It's common to see high volume data ingestion while needing to have a mechanism to automatically aggregate every minute / hour, or any other defined time span, for real time insights. The conventional thinking is to use Kafka to stream data for a raw transaction table/collection, and additionally set up another client with a cron job to slicing the data, do aggregation, and write back to another table. Something like below:
 
-![image](https://github.com/user-attachments/assets/2a6a9f1f-c818-4ca2-85fc-249f96b8af67)
+![image](https://github.com/user-attachments/assets/385cdfde-573b-454b-866f-fdfd6353d13b)
+
 
 
 <br><br>
