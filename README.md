@@ -21,7 +21,6 @@ Another thinking: why don't we leverage Couchbase for this?
 
 ## What Are the Options
 
-<br>
 There are more than 1 way to do it with Couchbase, a good balance of dev simplify, service level, and scalability. In this demo we'll look at 3 approaches, what i call the CONVENIENT the QUICK, and the QUICKEST. 
 
 
@@ -40,10 +39,6 @@ Set up a Couchbase cluster with **Data, Index, Query, Eventing** service deploye
 
 
 ## Clone Project and Run Scripts for Setup
-
-
-<br>
-
 
 Clone this repo 
 ```
@@ -148,8 +143,8 @@ Now when we go to **Documents** tab, select **data.aggregation.m_rt_all** namesp
 
 🎊 Voilà! Now we see Couchbase being more than a mere NoSQL JSON store. If you're wondering how the minutely aggregation is done, the secret sause is a mix of the following: 
 - Couchbase [**Eventing**](https://docs.couchbase.com/server/current/eventing/eventing-overview.html) which is an in-memory pub-sub implementation of db-level event-driven architecting,
-- Ability to embed **SQL** queries into the script of the Eventing function  
-- Create **timers** directly with Couchbase Eventing to automate the job
+- Ability to embed [**SQL**](https://docs.couchbase.com/cloud/eventing/eventing-handler-basicN1qlSelectStmt.html) queries into the script of the Eventing function  
+- Create [**Recurring Timers**](https://docs.couchbase.com/server/current/eventing/eventing-timers.html) directly with Couchbase Eventing to automate the job
 
 Quite convenient eh? But let's do some checking and evaluation.
 
@@ -158,14 +153,12 @@ Quite convenient eh? But let's do some checking and evaluation.
 
 ## Data Integrity Check 
 
-<br>
+How do we make sure the query is not missing out on any transactions? Easy. Couchbase let's you query the data with SQL syntax. 
 
-How do we make sure the query is not missing out on any transactions? Easy. Couchbase let's you query the data with SQL. 
-
-Say, for this minute **10:48**. The query says there are 5600 transactions for this minute (the gap of 400 from 6000) is as mentioned above, my hardware resource is limited. 
+Say, for the document **2024-11-16T10:48:00Z**, which represent the minute of 10:48, the output shows a total of **56,000** documents retrieved from query. Is that the **ACTUAL** number of documents inserted into Couchbase for the past minute?
 
 ![Screenshot 2024-11-16 at 9 05 01 PM](https://github.com/user-attachments/assets/2e0f24f1-fa0e-45fd-aa8a-757582755065)
-)
+
 
 <br>
 
@@ -186,8 +179,6 @@ Bingo.
 <br><br>
 
 ## Service Level Check 
-
-<br>
 
 Let's run some queries to see when exactly are our Eventing timers fired. 
 
@@ -332,8 +323,6 @@ python3 dataingest.py
 
 
 ## Let's Do Some Digging
-
-<br>
 
 Go to **Query** tab, and run the following:
 ```
