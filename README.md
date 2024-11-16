@@ -7,14 +7,9 @@ It's common to see high volume data ingestion while needing to have a mechanism 
 ![image](https://github.com/user-attachments/assets/385cdfde-573b-454b-866f-fdfd6353d13b)
 
 
-
 <br><br>
 
-Another thinking: why don't we leverage Couchbase for this? 
-
-
-![image](https://github.com/user-attachments/assets/62869be5-bb77-4f44-a66b-54d989b070ce)
-
+It's not hard to deduce that at database level, such a scenario demands scalability of data key-value ops and more importantly, speed of which to aggregate date since they keep coming in every second at large volume. Coupled with a high speed requirement, it becomes a headache for many an architects and DBAs. This demo wants to show you a Couchbase point-of-view.
 
 
 <br><br>
