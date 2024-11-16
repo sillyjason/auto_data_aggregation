@@ -64,6 +64,7 @@ python3 setupeventing.py
 <br>
 
 >🙌🏻 Eventing is Couchbase's answer to event-driven architecture, **at scale**. Other than common implementations with oplogs, we implemented a pub/sub streaming mechanism to make sure scalability is taken care of from day 1.
+>
 > We'll call the Couchbase Rest API endpoints to set up 3 Eventing functions. **on_data_input**, together with **on_data_input_junior** is Couchbase's answer to real-time data processing at speed and scale.
 >
 > **recur_aggregation_trigger** is for creating the recurring job for aggregation every minute.
