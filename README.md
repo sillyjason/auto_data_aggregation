@@ -195,13 +195,12 @@ order by trigger_time
 
 <br>
 
-From the result page, select **Table** tab to make it less painful to see the timings. **trigger_time_fmt** records when the eventing is fired and obviously, despite being intentionally scheduled at the beginning of every minute, there is 3-7 seconds' delay.
-
-![image](https://github.com/user-attachments/assets/0283e443-87c8-49cc-9d16-0286f162c7c6)
+Switch to **Table** view. Notice anything? The **trigger_time_fmt** indicates when this function is triggered. And we can see for every minute (10:35, for example), the aggregation needs to wait ~5 seconds past the next minute to trigger (10:36:06, in the same example). Of course it's safe to assume the process of query and subsequent insertion of the output will happen even later. 
+![image](https://github.com/user-attachments/assets/26ccf4fc-9129-47a9-95ea-3e75e7de22f0)
 
 <br>
 
->🙌🏻 To understand how the timers are scheduled, the logics are contained within the Javascript codes of the respective function under **Eventing** tab. 
+For some industries (such as F&B or retail), this seconds delay shouldn't be a big deal. For others (such as financial services), this delay is unacceptable. So, how can we make it faster?
 
 <br>
 
