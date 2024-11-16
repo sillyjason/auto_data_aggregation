@@ -224,7 +224,20 @@ Before we start talking about option 2, one important question to ask is, which 
 
 <br>
 
-Go to Eventing tab, 
+Let's first flush **main** bucket. 
+
+<br>
+
+Go to **Eventing** tab, deploy **on_data_input**. Leave **on_data_input_junior**. This will write back a timestamp in metadata into the document itself, index the field, based on which we'll query this time.
+
+> If you're interested in understanding Couchbase Eventing in further depth, [this](https://docs.couchbase.com/server/current/eventing/eventing-examples.html) page has a few short examples.
+
+<br>
+
+Go to **Index** tab, where you'll see the index being built. Notice we've indexed both server timestamp and client timestamp, along with other fields to build [Cover Index](https://docs.couchbase.com/server/current/n1ql/n1ql-language-reference/covering-indexes.html) which will make querying much more performant.
+
+![image](https://github.com/user-attachments/assets/c90633a1-1805-4ccd-afd9-f64275c3891b)
+
 
 <br>
 
@@ -232,6 +245,11 @@ Go back to IDE, open another Terminal window, and run the timer script which wil
 ```
 python3 timer.py
 ```
+
+<br>
+
+The timer will trigger at the top of the next minute.
+![image](https://github.com/user-attachments/assets/756a8ecf-69c2-44f3-8dbe-725886b78d82)
 
 <br>
 
