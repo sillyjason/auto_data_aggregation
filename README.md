@@ -296,13 +296,15 @@ That means we don't have the wait until the minute is passed to start working on
 
 Let's flush again the bucket. Then, go to **Eventing** tab and deploy function **on_data_input_junior**. Leave **on_data_input** alone for now.
 
-![Screenshot 2024-11-16 at 10 09 34 PM](https://github.com/user-attachments/assets/b7f56aec-3ca5-4ba7-9d0d-a1998c4d9384)
+![image](https://github.com/user-attachments/assets/6347bf34-53b9-4f44-9643-bf4159cacf04)
+
 
 <br>
 
 Once deployment is done, restart the data ingestion script. 
 
 <br>
+
 
 
 
