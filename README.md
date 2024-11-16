@@ -122,36 +122,36 @@ python3 dataingest.py
 <br>
 
 We've set up a continuous 1000 write-per-second stream for data ingestion. 
+
 ![image](https://github.com/user-attachments/assets/4872ac43-72c5-4dff-b970-5989e9fd8639)
 
 <br>
 
-Go to Couchbase and verify this qps. The **ops/sec** metric should reflect this number, give or take. Give as in additional writes from the Eventing functions, take as in my when the machine (such as my laptop) running the data ingestion sometimes is limited by its own available resources and hence running short of achieving the 1000/sec. 
+Go to Couchbase and verify this qps. The **ops/sec** metric should reflect this number, give or take. Give as in additional writes from the Eventing functions, take as in my when the machine (such as my laptop) running the data ingestion sometimes is limited by its own available resources and hence running short of achieving the 1000/sec.
+
 ![image](https://github.com/user-attachments/assets/d9379c3c-0691-4c51-b904-82ad9a939f8d)
 
 
 <br>
 
 Now when we go to **Documents** tab, select **data.aggregation.m_rt_all** namespace, the minutely aggregation result show already be there.  
+
 ![image](https://github.com/user-attachments/assets/510cb088-6903-4122-bbc3-7edcfca12a66)
 
 
 <br>
 
+🎊 Voilà! Now we see Couchbase being more than a mere NoSQL JSON store. If you're wondering how the minutely aggregation is done, the secret sause is a mix of the following: 
+- Couchbase **Eventing** which is an in-memory pub-sub implementation of db-level event-driven architecting,
+- Ability to embed **SQL** queries into the script of the Eventing function  
+- Create **timers** directly with Couchbase Eventing to automate the job
 
-
-<br>
-
-
-🎊 Voilà! With Couchbase Eventing, we don't even need an external server for scheduling aggregation tasks every defined period. Couchbase serves as a reliable and scaling platform for data operations. 
-
-BUT - there's one catch. If you require the timers to be fired with "wall-clock" accuracy, read on.
-
+Quite convenient eh? But let's do some checking and evaluation.
 
 <br><br>
 
 
-# Being Wall-clock Accurate 
+# Let's  
 
 <br>
 
