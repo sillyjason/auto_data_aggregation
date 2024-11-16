@@ -287,9 +287,21 @@ Let's break it down:
 
 <br>
 
-So, an everage 
+So, an aggregation every minute is ready at ~500 milliseconds passed the minute. Whether this passes the service level check? Depends on your service level.
 
 <br>
+
+## Data Integrity Check 
+
+<br>
+
+After some scrutiny, there could be potential issues with this approach. 
+
+
+The key being the difference between a client time and the server time. 
+
+<br>
+
 
 The function in the example fires the following query to Couchbase, which performs the aggregation, and directly insert output into a collection. 
 
