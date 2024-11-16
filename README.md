@@ -295,10 +295,7 @@ So, an aggregation every minute is ready at ~500 milliseconds passed the minute.
 
 <br>
 
-After some scrutiny, there could be potential issues with this approach. 
-
-
-The key being the difference between a client time and the server time. 
+Is this a perfect approach? Depends. For one, 500ms might not be a satisfactory latency in some cases. More importantly, Couchbase Query service plus Index Service is used for aggregation, and although through Couchbase Database Change Protocol, data mutations are subscribed by Indexers to update indexes in near-real-time, they adhere to a [Eventual-consistency](https://docs.couchbase.com/server/current/learn/services-and-indexes/indexes/index-lifecycle.html#index-updates) pattern. In situations where there's huge amount of data mutations and limited resources, it can take a while for update the index. While Couchbase Query provides [SCAN CONSISTENCY](https://docs.couchbase.com/server/current/n1ql/n1ql-manage/query-settings.html#scan_consistency) for queries, we don't want the index building to becomes bottlenecks when speed is paramount.
 
 <br>
 
