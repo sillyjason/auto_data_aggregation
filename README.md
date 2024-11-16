@@ -25,6 +25,7 @@ Another thinking: why don't we leverage Couchbase for this?
 There's really more than 1 ways of achieving this with Couchbase. And you'll have to figure out a good mix and balance of dev simplify, service level, and scalability. Overall we'll be looking at options below, what i call the **convenient**, the **quick**, and the **quickest** methods. 
 
 
+<br><br>
 
 # Setup
 
@@ -117,6 +118,23 @@ Back to the python app. Run the dataingest script
 ```
 python3 dataingest.py
 ```
+
+<br>
+
+We've set up a continuous 1000 write-per-second stream for data ingestion. 
+![image](https://github.com/user-attachments/assets/4872ac43-72c5-4dff-b970-5989e9fd8639)
+
+<br>
+
+Go to Couchbase and verify this qps. The **ops/sec** metric should reflect this number, give or take. Give as in additional writes from the Eventing functions, take as in my when the machine (such as my laptop) running the data ingestion sometimes is limited by its own available resources and hence running short of achieving the 1000/sec. 
+![image](https://github.com/user-attachments/assets/d9379c3c-0691-4c51-b904-82ad9a939f8d)
+
+
+<br>
+
+Now when we go to **Documents** tab, select **data.aggregation.m_rt_all** namespace, the minutely aggregation result show already be there.  
+![image](https://github.com/user-attachments/assets/510cb088-6903-4122-bbc3-7edcfca12a66)
+
 
 <br>
 
