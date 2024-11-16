@@ -1,4 +1,4 @@
-# ⏰ Use Couchbase with a Recurring Timer for Auto Aggregation ⏰
+![image](https://github.com/user-attachments/assets/e1a74e06-6e5a-42a5-8cd8-6bef156f66bf)# ⏰ Use Couchbase with a Recurring Timer for Auto Aggregation ⏰
 
 <br><br>
 
@@ -158,13 +158,27 @@ Quite convenient eh? But let's do some checking and evaluation.
 How do we make sure the query is not missing out on any transactions? Easy. Couchbase let's you query the data with SQL. 
 
 Say, for this minute **10:48**. The query says there are 5600 transactions for this minute (the gap of 400 from 6000) is as mentioned above, my hardware resource is limited. 
+
 ![image](https://github.com/user-attachments/assets/fb8a2af8-e1e3-404a-8d21-20b1ed807698)
 
 <br>
 
 To verify, simply to go Query tab, and let's run the following: 
 ```
+SELECT SUM(1) AS total_transactions
+FROM `main`.`data`.`data`
+WHERE time_str LIKE "2024-11-16 10:48%"
+```
 
+<br>
+
+Bingo.
+
+![image](https://github.com/user-attachments/assets/5f9efae1-5bbd-4e42-b124-8d1b06150e7b)
+
+<br>
+
+## Query Data Integrity Check 
 
 <br>
 
@@ -172,10 +186,10 @@ Let's run some queries to see when exactly are our Eventing timers fired.
 
 <br>
 
-Go to **Query** tab, and let's fire the following. Yes, Couchbase is a NoSQL database that supports SQL.
+Stay on **Query** tab, and let's fire the following. Yes, Couchbase is a NoSQL database that supports SQL.
 ```
 select start_time_fmt, trigger_time_fmt 
-from `main`.`aggregation`.`minute`
+from `main`.`aggregation`.`m_rt_all`
 order by trigger_time
 ```
 
