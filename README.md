@@ -287,49 +287,27 @@ Let's break it down:
 
 <br>
 
-So, an aggregation every minute is ready at ~500 milliseconds passed the minute. Whether this passes the service level check? Depends on your service level.
+So, an aggregation every minute is ready at ~500 milliseconds passed the minute.
 
 <br>
 
-## Data Integrity Check 
+Is this a perfect approach? Depends. For one, 500ms might not be a satisfactory latency in some cases. More importantly, Couchbase Query service plus Index Service is used for aggregation, and although through Couchbase Database Change Protocol, data mutations are subscribed by [Indexers](https://docs.couchbase.com/server/current/learn/services-and-indexes/indexes/index-lifecycle.html#index-updates) to update indexes in near-real-time, they adhere to a **eventual-consistency** pattern. In situations where there's huge amount of data mutations and limited resources, it can take a while for update the index. While Couchbase Query provides [SCAN CONSISTENCY](https://docs.couchbase.com/server/current/n1ql/n1ql-manage/query-settings.html#scan_consistency) for queries, we don't want the index building to becomes bottlenecks when speed is paramount.
 
-<br>
+> 🙌🏻 There's also a key distinction between client time and server time. We're implementing based on the former but there are also scenarios where the latter makes more sense. 
 
-Is this a perfect approach? Depends. For one, 500ms might not be a satisfactory latency in some cases. More importantly, Couchbase Query service plus Index Service is used for aggregation, and although through Couchbase Database Change Protocol, data mutations are subscribed by Indexers to update indexes in near-real-time, they adhere to a [Eventual-consistency](https://docs.couchbase.com/server/current/learn/services-and-indexes/indexes/index-lifecycle.html#index-updates) pattern. In situations where there's huge amount of data mutations and limited resources, it can take a while for update the index. While Couchbase Query provides [SCAN CONSISTENCY](https://docs.couchbase.com/server/current/n1ql/n1ql-manage/query-settings.html#scan_consistency) for queries, we don't want the index building to becomes bottlenecks when speed is paramount.
-
-<br>
+<br><br>
 
 
-The function in the example fires the following query to Couchbase, which performs the aggregation, and directly insert output into a collection. 
+# The Quickest Approach
 
-```
-INSERT INTO `main`.`aggregation`.`minute_api` (KEY k, VALUE v)
-    SELECT v.start_time k, v
-    FROM
-    (
-        WITH n AS (TRUNC(NOW_MILLIS()/1000))
-            ,o AS (n%60)
-            ,e AS (n-o)
-            ,s AS (e-60)
-        SELECT
-            DATE_TRUNC_STR(DATE_ADD_STR(NOW_STR(),-1,"minute"),"minute") AS start_time,
-            DATE_TRUNC_STR(NOW_STR(),"second") AS trigger_time,
-            COUNT(1) AS count,
-            AVG(`amount`) AS average_amt,
-            SUM(`amount`) AS total_amt,
-            {"silver": SUM(CASE WHEN cust_type = "silver" THEN 1 ELSE 0 END),
-            "gold": SUM(CASE WHEN cust_type = "gold" THEN 1 ELSE 0 END),
-            "platinum": SUM(CASE WHEN cust_type = "platinum" THEN 1 ELSE 0 END)
-            } AS category
-        FROM `main`.`data`.`data`
-        WHERE `time_unix` BETWEEN s AND e
-    ) v
-    RETURNING DATE_TRUNC_STR(DATE_ADD_STR(NOW_STR(),-1,"minute"),"minute") AS start_time
-```
+<br><br><br>
 
-<br>
+Is there a way to make sure the aggregation doc is there at the exact millisecond pass the minute? 
 
-With **RETURNING DATE_TRUNC_STR(DATE_ADD_STR(NOW_STR(),-1,"minute"),"minute")** AS start_time, we're capturing the document key, with which we can insert the time of this task's initiation time into the same document with Couchbase's [sub-document insert](https://docs.couchbase.com/python-sdk/current/howtos/subdocument-operations.html).
+Yes.
+
+![image](https://github.com/user-attachments/assets/13584fff-2104-48b6-9827-48b347990fae)
+
 
 <br>
 
