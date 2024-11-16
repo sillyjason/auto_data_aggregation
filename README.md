@@ -28,8 +28,6 @@ There are more than 1 way to do it with Couchbase, a good balance of dev simplif
 
 # Setup
 
-<br>
-
 Set up a Couchbase cluster with **Data, Index, Query, Eventing** service deployed. If you are not familiar with Couchbase cluster setup, follow [this](https://docs.couchbase.com/server/current/manage/manage-nodes/create-cluster.html) documentation. I'm using 2 machines of **t2.2xlarge** with **16 vCPU** and **32GiB** of Memory. 
 
 >🙌🏻 This 2-node deployment is really just for testing purposes. For any production workload you'd want at least 3 nodes (for Data service) or 2 nodes (for other Couchbase services) for High Availability services. It's also a good idea to leverage Couchbase's [multi-dimensional scaling](https://docs.couchbase.com/operator/current/concept-mds.html) for isolcated workloads deployment when necessary.
@@ -222,7 +220,7 @@ And we don't need the function recur_aggregation_trigger anymore. So let's de-ac
 
 <br>
 
-Go back to IDE, open another Terminal window, and run the timer script which will trigger the aggregation exactly at the beginning milliseconds of the minute: 
+Go back to IDE, open another Terminal window, and run the **timer** script which will trigger the aggregation exactly at the beginning milliseconds of the minute: 
 ```
 python3 timer.py
 ```
@@ -235,7 +233,7 @@ Go grab a cub of your favourate espresso, come back and there should already be 
 
 <br>
 
-Let's use a more convenient way to look up the data. Go to **Query** tab.
+After the caffeine break, let's use a more convenient way to look up the aggregate data this time. Go to **Query** tab.
 
 ```
 select meta().id, 
@@ -249,7 +247,7 @@ order by start_time
 
 <br>
 
-Switch to Table view so results are more readable.
+We're now querying against the **m_api_all** collection which holds the result of queries fired through **timer.py**. Switch to Table view so results are more readable.
 
 ![Screenshot 2024-11-16 at 9 25 59 PM](https://github.com/user-attachments/assets/36e770d9-43b9-45d7-8533-3a5ee21afa43)
 
@@ -267,7 +265,13 @@ So, an aggregation every minute is ready at **~500 milliseconds** passed the min
 
 <br>
 
-Is it the perfect approach? Depends. For one, 500ms might not be a satisfactory latency in some cases. More importantly, Couchbase Query service plus Index Service is used for aggregation, and although through Couchbase Database Change Protocol, data mutations are subscribed by [Indexers](https://docs.couchbase.com/server/current/learn/services-and-indexes/indexes/index-lifecycle.html#index-updates) to update indexes in near-real-time, they adhere to a **eventual-consistency** pattern. In situations where there's huge amount of data mutations and limited resources, it can take a while for update the index. While Couchbase Query provides [SCAN CONSISTENCY](https://docs.couchbase.com/server/current/n1ql/n1ql-manage/query-settings.html#scan_consistency) for queries, we don't want the index building to becomes bottlenecks when speed is paramount.
+Is it the perfect approach? Depends. 
+
+For one, **500ms** might not be a satisfactory latency in some cases. 
+
+More importantly, Couchbase Query service plus Index Service is used here for aggregation, and although through Couchbase Database Change Protocol (DCP), data mutations are subscribed by [Indexers](https://docs.couchbase.com/server/current/learn/services-and-indexes/indexes/index-lifecycle.html#index-updates) to update indexes in near-real-time, they adhere to a **eventual-consistency** pattern. So in situations where there's huge amount of data mutations and limited resources, it can take a while for update the index. 
+
+While Couchbase Query provides [SCAN CONSISTENCY](https://docs.couchbase.com/server/current/n1ql/n1ql-manage/query-settings.html#scan_consistency) for queries, we don't want the index building to becomes bottlenecks when speed is paramount.
 
 > 🙌🏻 There's also a key distinction between client time and server time. We're implementing based on the former but there are also scenarios where the latter makes more sense. 
 
@@ -275,8 +279,6 @@ Is it the perfect approach? Depends. For one, 500ms might not be a satisfactory 
 
 
 # The Quickest Approach
-
-<br><br>
 
 Is there a way to make sure the aggregation doc is there at the exact millisecond pass the minute? 
 
@@ -286,22 +288,22 @@ Yes.
 
 <br>
 
-Couchbase is built for excellent scalability with **key-value** ops. Together with Eventing, we can capture mutations and perform aggregation logics, and concurrently update result extremely fast and reliably. That means we don't have the wait until the minute is passed to start working on the aggregation; rather, every new transaction is captured and aggregated instantly. Let's dig in (remember to shut down the timer.py scripts if you have not yet).
+Couchbase is built for excellent scalability with **key-value** ops. Together with Eventing, we can capture mutations and perform aggregation logics, and concurrently update result extremely fast and reliably. 
+
+That means we don't have the wait until the minute is passed to start working on the aggregation; rather, every new transaction is captured and aggregated instantly. Let's dig in (remember to shut down the timer.py scripts if you have not yet, since we no longer need it).
 
 <br>
 
-Let's flush again the bucket. Then, go to **Eventing** tab and deploy both functions **on_data_input** and **on_data_input_junior**.
+Let's flush again the bucket. Then, go to **Eventing** tab and deploy function **on_data_input_junior**. Leave **on_data_input** alone for now.
 
 ![Screenshot 2024-11-16 at 10 09 34 PM](https://github.com/user-attachments/assets/b7f56aec-3ca5-4ba7-9d0d-a1998c4d9384)
 
 <br>
 
 Once deployment is done, restart the data ingestion script. 
-```
-python3 dataingest.py
-```
 
 <br>
+
 
 
 <br>
