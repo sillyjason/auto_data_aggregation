@@ -26,7 +26,7 @@ There's really more than 1 ways of achieving this with Couchbase. And you'll hav
 
 
 
-## Setup
+# Setup
 
 <br>
 
@@ -101,61 +101,25 @@ python3 setupdata.py
 
 <br><br>
 
-
-## Couchbase Tour
-
-<br>
-
 Right now we have almost everything we need to get the engine running. Log in Couchbase cluter, go to **Eventing** tab, and Deploy all 3 functions. 
 
 
-![image](https://github.com/user-attachments/assets/b7e6e1df-4648-4b18-953f-e42f599b9b28)
-
+![image](https://github.com/user-attachments/assets/34ca0f45-d863-4b24-be52-41cbd10cbefa)
 
 
 <br>
 
-Go to **Documents** tab, change to keyspace **eventing._default.one_off_trigger_one**, where there's already a document created previously. Here **count** determines volume of data inserted every minute by Eventing (say, a value of 300 would lead to 300 * 300 = 90,000 documents created per minute). Change to value of **active** to **true** to trigger the function for recurring timer creation. 
-
-```
-{
-  "count": 300,
-  "active": false
-}
-```
+# Let's Begin with the Convenient Approach
 
 <br>
 
-
-Go back to Eventing tab, click on **log** button of function "recurr_ingestion_trigger", and the logs with timer created should display on top. 
-
+Back to the python app. Run the dataingest script
 ```
-2024-10-31T16:28:08.078+00:00 [INFO] "From OnUpdate: create/overwrite doc.active" true "56e09222-9b39-4cfa-9d3f-df0bf721f6d6" 
-
-2024-10-31T16:28:08.078+00:00 [INFO] "From CreateRecurringTimer: creating timer" "via_onupdate" "56e09222-9b39-4cfa-9d3f-df0bf721f6d6" 
+python3 dataingest.py
 ```
 
 <br>
 
-Wait a minute, and you should be able to see documents pop up in **Data** tab.
-
-![image](https://github.com/user-attachments/assets/bbb72f38-0d70-42f5-a75b-4ebdabac8902)
-
-
-<br>
-
-Now let's trigger the other timer for aggregation.  Go to **eventing._default.one_off_trigger_two**, and change the value of "active" to true.
-
-<br>
-
-![image](https://github.com/user-attachments/assets/724b1706-96d6-4c0a-87c0-6298761481ba)
-
-
-<br>
-
-Wait one more minute to see aggregation result every minute popping up: 
-
-![image](https://github.com/user-attachments/assets/07e2ce1e-290d-4003-bc78-0afb51923fc6)
 
 
 <br>
