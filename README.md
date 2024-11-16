@@ -113,8 +113,6 @@ python3 dataingest.py
 
 # Let's Begin with the Convenient Approach
 
-<br>
-
 Go to Couchbase and verify this qps. The **ops/sec** metric should reflect this number, give or take. "Give" as in additional writes from the Eventing functions, "take" as in my when the local machine (such as my laptop) running has limited computing power.
 
 ![Screenshot 2024-11-16 at 10 22 20 PM](https://github.com/user-attachments/assets/152e6b98-d963-4168-bfb9-6786e8e003f4)
@@ -153,16 +151,13 @@ Quite convenient eh? But let's do some checking and evaluation.
 
 ## Data Integrity Check 
 
-How do we make sure the query is not missing out on any transactions? Easy. Couchbase let's you query the data with SQL syntax. 
-
-Say, for the document **2024-11-16T10:48:00Z**, which represent the minute of 10:48, the output shows a total of **56,000** documents retrieved from query. Is that the **ACTUAL** number of documents inserted into Couchbase for the past minute?
+How do we make sure the query is not missing out on any transactions? Say, for the document **2024-11-16T10:48:00Z**, which represent the minute of 10:48, the output shows a total of **56,000** documents retrieved from query. Is that the **ACTUAL** number of documents inserted into Couchbase for the past minute?
 
 ![Screenshot 2024-11-16 at 9 05 01 PM](https://github.com/user-attachments/assets/2e0f24f1-fa0e-45fd-aa8a-757582755065)
 
-
 <br>
 
-To verify, simply to go Query tab, and let's run the following: 
+Easy. Couchbase let's you query your data with SQL syntax. Let's run the following at **Query** tab: 
 ```
 SELECT SUM(1) AS total_transactions
 FROM `main`.`data`.`data`
@@ -171,7 +166,7 @@ WHERE time_str LIKE "2024-11-16 10:48%"
 
 <br>
 
-Bingo.
+Bingo. The deviation from **60,000** (1000 writes per second) is again, a fact that I need to upgrade my laptop.
 
 ![Screenshot 2024-11-16 at 9 05 37 PM](https://github.com/user-attachments/assets/8eee25bc-2c57-4d76-b7f1-8eeac83399b5)
 
@@ -180,11 +175,11 @@ Bingo.
 
 ## Service Level Check 
 
-Let's run some queries to see when exactly are our Eventing timers fired. 
+Let's run some queries to see when exactly are our Eventing timers fired, and hence, get some insights of when the output would be available.
 
 <br>
 
-Stay on **Query** tab, and let's fire the following. Yes, Couchbase is a NoSQL database that supports SQL.
+Stay on **Query** tab, and let's fire the following. 
 ```
 select start_time_fmt, trigger_time_fmt 
 from `main`.`aggregation`.`m_rt_all`
@@ -193,16 +188,16 @@ order by trigger_time
 
 <br>
 
-Switch to **Table** view. Notice anything? The **trigger_time_fmt** indicates when this function is triggered. And we can see for every minute (10:35, for example), the aggregation needs to wait ~5 seconds past the next minute to trigger (10:36:06, in the same example). Of course it's safe to assume the process of query and subsequent insertion of the output will happen even later. Let's stop the ingestion script for now.
+Switch to **Table** view. Notice anything? The **trigger_time_fmt** indicates when this function is triggered. And we can see for every minute (10:35, for example), the aggregation needs to wait around **5 seconds** past the next minute to trigger (10:36:06, in the same example). Then it's safe to assume the process of query and update aggregate doc will add up the latency. 
 
 ![Screenshot 2024-11-16 at 9 07 25 PM](https://github.com/user-attachments/assets/196b0737-7402-4b15-8290-68cfd6b6f4b7)
 
 
 <br>
 
-For some industries (such as F&B or retail), this seconds delay shouldn't be a big deal. For others (such as financial services), this delay is unacceptable. So, how can we make it faster?
+Let's stop the ingestion script for now and think about this option. For some industries (such as F&B or retail), this seconds delay shouldn't be a big deal. For others (such as financial services), this delay is unacceptable. So, how can we make it faster?
 
-<br>
+<br><br>
 
 ## Being Wall-clock Accurate
 
@@ -213,12 +208,6 @@ Couchbase recurring timer, despite being convenient to set up and manage, does n
 
 
 # The Quick Approach
-
-<br>
-
-Before we start talking about option 2, one important question to ask is, which field should we look at: the timestamp on client, or the timestamp at server? In the approach above the client side timestamp was used. Now let's look at the server-side timestamp implementation. With Couchbase, it's done with Eventing too.   
-
-<br>
 
 Let's first flush **main** bucket. 
 
