@@ -22,7 +22,7 @@ Another thinking: why don't we leverage Couchbase for this?
 ## What Are the Options
 
 <br>
-There's really more than 1 ways of achieving this with Couchbase. And you'll have to figure out a good mix and balance of dev simplify, service level, and scalability. Overall we'll be looking at options below, what i call the **convenient**, the **quick**, and the **quickest** methods. 
+There are more than 1 way to do it with Couchbase, a good balance of dev simplify, service level, and scalability. In this demo we'll look at 3 approaches, what i call the CONVENIENT the QUICK, and the QUICKEST. 
 
 
 <br><br>
@@ -30,7 +30,6 @@ There's really more than 1 ways of achieving this with Couchbase. And you'll hav
 # Setup
 
 <br>
-
 
 Set up a Couchbase cluster with **Data, Index, Query, Eventing** service deployed. If you are not familiar with Couchbase cluster setup, follow [this](https://docs.couchbase.com/server/current/manage/manage-nodes/create-cluster.html) documentation. I'm using 2 machines of **t2.2xlarge** with **16 vCPU** and **32GiB** of Memory. 
 
@@ -98,60 +97,57 @@ python3 setupeventing.py
 <br>
 
 
-Run the script for setting up GSI (global secondary index) and the initial documents needed as document triggers 
+Run the script to build relevant indxes and create initial documents needed as triggers. 
 ```
 python3 setupdata.py 
 ```
 
-<br><br>
-
-Right now we have almost everything we need to get the engine running. 
-
-
 <br>
 
-# Let's Begin with the Convenient Approach
+We're ready to start ingesting data. Run the dataingest script, which will start writing into the Couchbase bucket with a speed of 1000 insert per second. 
 
-<br>
-
-Back to the python app. Run the dataingest script
 ```
 python3 dataingest.py
 ```
 
 <br>
 
-We've set up a continuous 1000 write-per-second stream for data ingestion. 
-
 ![image](https://github.com/user-attachments/assets/4872ac43-72c5-4dff-b970-5989e9fd8639)
+
+<br><br>
+
+# Let's Begin with the Convenient Approach
 
 <br>
 
-Go to Couchbase and verify this qps. The **ops/sec** metric should reflect this number, give or take. "Give" as in additional writes from the Eventing functions, "take" as in my when the machine (such as my laptop) running the data ingestion sometimes is limited by its own available resources and hence running short of achieving the 1000/sec.
+Go to Couchbase and verify this qps. The **ops/sec** metric should reflect this number, give or take. "Give" as in additional writes from the Eventing functions, "take" as in my when the local machine (such as my laptop) running has limited computing power.
 
-![image](https://github.com/user-attachments/assets/d9379c3c-0691-4c51-b904-82ad9a939f8d)
+![Screenshot 2024-11-16 at 10 22 20 PM](https://github.com/user-attachments/assets/152e6b98-d963-4168-bfb9-6786e8e003f4)
 
 
 <br>
 
 Go to **Eventing** tab, and let's deploy the function **recur_aggregation_trigger**. 
 
->🙌🏻 Leave the other 2 functions alone at the moment. They'll serve their purpose later. 
-
 <br>
 
 ![Screenshot 2024-11-16 at 9 03 31 PM](https://github.com/user-attachments/assets/4a7f3b72-d0a8-4b67-b63a-baca07b1fb27)
 
+<br>
 
-Now when we go to **Documents** tab, select **data.aggregation.m_rt_all** namespace, the minutely aggregation result show already be there.  
+>🙌🏻 Leave the other 2 functions alone at the moment. They'll serve their purpose later. 
+
+<br>
+
+Now when we go to **Documents** tab, select **data.aggregation.m_rt_all** namespace, the minutely aggregation result show gradually show up.  
 
 ![Screenshot 2024-11-16 at 9 04 07 PM](https://github.com/user-attachments/assets/6719fa79-0dd6-4efa-b147-d1e86ad094f7)
 
 
-<br>
+<br><br>
 
 🎊 Voilà! Now we see Couchbase being more than a mere NoSQL JSON store. If you're wondering how the minutely aggregation is done, the secret sause is a mix of the following: 
-- Couchbase **Eventing** which is an in-memory pub-sub implementation of db-level event-driven architecting,
+- Couchbase [**Eventing**](https://docs.couchbase.com/server/current/eventing/eventing-overview.html) which is an in-memory pub-sub implementation of db-level event-driven architecting,
 - Ability to embed **SQL** queries into the script of the Eventing function  
 - Create **timers** directly with Couchbase Eventing to automate the job
 
@@ -287,7 +283,7 @@ Let's break it down:
 
 <br>
 
-So, an aggregation every minute is ready at ~500 milliseconds passed the minute. Let's stop the data ingestion script do some reflection.
+So, an aggregation every minute is ready at **~500 milliseconds** passed the minute. Let's stop the data ingestion script do some reflection.
 
 <br>
 
