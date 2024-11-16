@@ -1,17 +1,10 @@
-# ⏰ Use Couchbase with a Recurring Timer for Auto Aggregation ⏰
-
-<br><br>
-
-It's common to see high volume data ingestion while needing to have a mechanism to automatically aggregate every minute / hour, or any other defined time span, for real time insights. The conventional thinking is to use Kafka to stream data for a raw transaction table/collection, and additionally set up another client with a cron job to slicing the data, do aggregation, and write back to another table. Something like below:
-
-![image](https://github.com/user-attachments/assets/385cdfde-573b-454b-866f-fdfd6353d13b)
-
+# 🚀 Use Couchbase with a Recurring Timer for Auto Aggregation 🚀
 
 <br>
 
-It's not hard to deduce that at database level, such a scenario demands scalability of data key-value ops and more importantly, speed of which to aggregate date since they keep coming in every second at large volume. Coupled with a high speed requirement, it becomes a headache for many an architects and DBAs. This demo wants to show you a Couchbase point-of-view.
+It's common to see high volume of data ingestion plus having to run aggregate every minute or any other defined time span, for real time insights. To achieve this you probably need a database, a streaming tool, and some query tool. And even with this, most ofteh there're challenges with scalability and kv inserts, and speed of which to aggregate data since they keep coming in every second at large volume. Coupled with a high speed SLA, it becomes a headache for many an architects and DBAs. 
 
-There are more than 1 way to do it actually, we just need a good balance of dev simplify, service level, and scalability. In this demo we'll look at 3 approaches, what i call the CONVENIENT the QUICK, and the QUICKEST. 
+This demo wants to show you a Couchbase point-of-view. There are more than 1 way to do it actually, we just need a good balance of dev simplify, service level, and scalability. In this demo we'll look at 3 approaches, what i call the CONVENIENT the QUICK, and the QUICKEST. 
 
 
 <br><br>
