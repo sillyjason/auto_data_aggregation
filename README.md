@@ -32,9 +32,9 @@ There's really more than 1 ways of achieving this with Couchbase. And you'll hav
 <br>
 
 
-Set up a single-node Couchbase cluster with **Data, Index, Query, Eventing** service deployed. If you are not familiar with Couchbase cluster setup, follow [this](https://docs.couchbase.com/server/current/manage/manage-nodes/create-cluster.html) documentation. I'm using **t2.2xlarge** with **8 vCPU** and **32GiB** of Memory. 
+Set up a Couchbase cluster with **Data, Index, Query, Eventing** service deployed. If you are not familiar with Couchbase cluster setup, follow [this](https://docs.couchbase.com/server/current/manage/manage-nodes/create-cluster.html) documentation. I'm using 2 machines of **t2.2xlarge** with **16 vCPU** and **32GiB** of Memory. 
 
->🙌🏻 This single-node deployment is really just for testing purposes. For any production workload you'd want at least 3 nodes (for Data service) or 2 nodes (for other Couchbase services) for High Availability services. It's also a good idea to leverage Couchbase's [multi-dimensional scaling](https://docs.couchbase.com/operator/current/concept-mds.html) for isolcated workloads deployment when necessary.
+>🙌🏻 This 2-node deployment is really just for testing purposes. For any production workload you'd want at least 3 nodes (for Data service) or 2 nodes (for other Couchbase services) for High Availability services. It's also a good idea to leverage Couchbase's [multi-dimensional scaling](https://docs.couchbase.com/operator/current/concept-mds.html) for isolcated workloads deployment when necessary.
 
 
 <br><br>
@@ -90,7 +90,10 @@ python3 setupeventing.py
 
 >🙌🏻 We'll call the Couchbase Rest API endpoints to set up 3 Eventing functions. **on_data_input**, together with **on_data_input_junior** is Couchbase's answer to real-time data processing at speed and scale.
 >
-> **recur_aggregation_trigger** is for creating the recurring job for aggregation every minute. 
+> **recur_aggregation_trigger** is for creating the recurring job for aggregation every minute.
+>
+> If you're interested in understanding Couchbase Eventing in further depth, [this](https://docs.couchbase.com/server/current/eventing/eventing-examples.html) page has a few short examples.
+
 
 <br>
 
@@ -226,13 +229,14 @@ Before we start talking about option 2, one important question to ask is, which 
 
 Let's first flush **main** bucket. 
 
-![image](https://github.com/user-attachments/assets/123e11db-55e5-42fc-be2f-ca23e5a40d79)
+![Screenshot 2024-11-16 at 8 57 52 PM](https://github.com/user-attachments/assets/ff2b041b-efcf-4aae-a734-2c9c7d2deb09)
+
 
 <br>
 
-Go to **Eventing** tab, deploy **on_data_input**. Leave **on_data_input_junior**. This will write back a timestamp in metadata into the document itself, index the field, based on which we'll query this time.
+And we don't need the function recur_aggregation_trigger anymore. So let's de-activate it.
 
-> If you're interested in understanding Couchbase Eventing in further depth, [this](https://docs.couchbase.com/server/current/eventing/eventing-examples.html) page has a few short examples.
+![image](https://github.com/user-attachments/assets/4cf3797f-ff6c-45bb-a979-61847e5cf759)
 
 <br>
 
