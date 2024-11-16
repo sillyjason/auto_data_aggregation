@@ -105,13 +105,7 @@ python3 setupdata.py
 
 <br><br>
 
-Right now we have almost everything we need to get the engine running. Log in Couchbase cluter, go to **Eventing** tab, and let's deploy the function **recur_aggregation_trigger**. 
-
->🙌🏻 Leave the other 2 functions alone at the moment. They'll serve their purpose later. 
-
-<br>
-
-![image](https://github.com/user-attachments/assets/34ca0f45-d863-4b24-be52-41cbd10cbefa)
+Right now we have almost everything we need to get the engine running. 
 
 
 <br>
@@ -133,12 +127,20 @@ We've set up a continuous 1000 write-per-second stream for data ingestion.
 
 <br>
 
-Go to Couchbase and verify this qps. The **ops/sec** metric should reflect this number, give or take. Give as in additional writes from the Eventing functions, take as in my when the machine (such as my laptop) running the data ingestion sometimes is limited by its own available resources and hence running short of achieving the 1000/sec.
+Go to Couchbase and verify this qps. The **ops/sec** metric should reflect this number, give or take. "Give" as in additional writes from the Eventing functions, "take" as in my when the machine (such as my laptop) running the data ingestion sometimes is limited by its own available resources and hence running short of achieving the 1000/sec.
 
 ![image](https://github.com/user-attachments/assets/d9379c3c-0691-4c51-b904-82ad9a939f8d)
 
 
 <br>
+
+Go to **Eventing** tab, and let's deploy the function **recur_aggregation_trigger**. 
+
+>🙌🏻 Leave the other 2 functions alone at the moment. They'll serve their purpose later. 
+
+<br>
+
+![image](https://github.com/user-attachments/assets/34ca0f45-d863-4b24-be52-41cbd10cbefa)
 
 Now when we go to **Documents** tab, select **data.aggregation.m_rt_all** namespace, the minutely aggregation result show already be there.  
 
