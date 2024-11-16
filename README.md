@@ -1,4 +1,4 @@
-![image](https://github.com/user-attachments/assets/e1a74e06-6e5a-42a5-8cd8-6bef156f66bf)# ⏰ Use Couchbase with a Recurring Timer for Auto Aggregation ⏰
+# ⏰ Use Couchbase with a Recurring Timer for Auto Aggregation ⏰
 
 <br><br>
 
@@ -151,7 +151,7 @@ Quite convenient eh? But let's do some checking and evaluation.
 <br><br>
 
 
-## Query Data Integrity Check 
+## Data Integrity Check 
 
 <br>
 
@@ -176,9 +176,10 @@ Bingo.
 
 ![image](https://github.com/user-attachments/assets/5f9efae1-5bbd-4e42-b124-8d1b06150e7b)
 
-<br>
 
-## Query Data Integrity Check 
+<br><br>
+
+## Service Level Check 
 
 <br>
 
@@ -204,7 +205,17 @@ For some industries (such as F&B or retail), this seconds delay shouldn't be a b
 
 <br>
 
-Couchbase recurring timer, despite being convenient to set up and manage, does not guarantee [wall-clock accuracy](https://docs.couchbase.com/server/current/eventing/eventing-timers.html#sharding-of-timers). That is to say, if the requirement is the aggregation function be fired at exactly the beginning nanoseond of the minute, Couchbase Eventing might not be the best option. 
+## Being Wall-clock Accurate
+
+Couchbase recurring timer, despite being convenient to set up and manage, does not guarantee [wall-clock accuracy](https://docs.couchbase.com/server/current/eventing/eventing-timers.html#sharding-of-timers). That is to say, if the requirement is the aggregation function be fired at exactly the beginning nanoseond of the minute, Couchbase Eventing might not be the best option. Let's look at option2.
+
+
+<br><br>
+
+
+# The Quick Approach
+
+<br>
 
 In this case, you can just create a light weight app that schedules the job more punctually to send queries to Couchbase, who processes it lightening fast. An example is set up in **app.py**. 
 
