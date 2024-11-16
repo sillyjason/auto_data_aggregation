@@ -19,6 +19,11 @@ Another thinking: why don't we leverage Couchbase for this?
 <br><br>
 
 
+## What Are the Options
+
+<br>
+There's really more than 1 ways of achieving this with Couchbase. And you'll have to figure out a good mix and balance of dev simplify, service level, and scalability. Overall we'll be looking at options below, what i call the **convenient**, the **quick**, and the **quickest** methods. 
+
 
 
 ## Setup
@@ -50,11 +55,11 @@ git clone https://github.com/sillyjason/auto_data_aggregation
 At the project root directory, create a .env file with the following env variables
 ```
 # EE Environment Variables 
-EE_HOSTNAME= // hostname of your Couchbase node
-EVENTING_HOSTNAME= // hostname of your Couchbase node
+EE_HOSTNAME= // hostname of any Couchbase node with Data service deployed
+EVENTING_HOSTNAME= // hostname of your Couchbase node with Eventing service deployed
 
 #CB User Credential
-CB_USERNAME= // username for admin credentials to Couchbase cluster 
+CB_USERNAME= // username for admin credentials to Couchbase cluster
 CB_PASSWORD= // password for admin credentials to Couchbase cluster
 ```
 
@@ -82,7 +87,7 @@ python3 setupeventing.py
 
 <br>
 
->🙌🏻 We'll call the Couchbase Rest API endpoints to set up 3 Eventing functions. **recurr_ingestion_trigger**, together with **recur_final_ingestion** is for creating the recurring timer for data ingestion job. In real time you would use a streaming tool for the job but for simplicity of our case, we'll delegate even this to Couchbase Eventing.
+>🙌🏻 We'll call the Couchbase Rest API endpoints to set up 3 Eventing functions. **on_data_input**, together with **on_data_input_junior** is Couchbase's answer to real-time data processing at speed and scale.
 >
 > **recur_aggregation_trigger** is for creating the recurring job for aggregation every minute. 
 
