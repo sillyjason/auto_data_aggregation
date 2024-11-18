@@ -5,6 +5,7 @@ function CreateRecurringTimer(context) {
     var nextMinute = new Date(); 
     const currentSeconds = nextMinute.getSeconds();
 
+    // If the current time is not at the start of the minute, set the seconds to 0 and add 1 minute
     if (currentSeconds !== 0) {
         nextMinute.setSeconds(0);
         nextMinute.setMinutes(nextMinute.getMinutes() + 1);
@@ -41,11 +42,11 @@ function RecurringTimerCallback(context) {
         "platinum": SUM(CASE WHEN cust_type = "platinum" THEN 1 ELSE 0 END)
         } AS category
     FROM `main`.`data`.`data`
-    WHERE `time_unix` BETWEEN s AND e;
+    WHERE `time_unix` BETWEEN s*1000 AND e*1000;
     
 
     for (var item of results) {   // Stream results using 'for' iterator.
-        minute_collection[item.start_time_fmt] = item
+        m_rt_all[item.start_time_fmt] = item
     }
     
     results.close()

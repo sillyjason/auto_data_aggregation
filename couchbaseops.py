@@ -36,7 +36,7 @@ def get_doc(bucket, scope, collection, doc_id):
         return None
 
 
-def insert_doc(bucket, scope, collection, doc, doc_id=None): 
+def insert_doc(bucket, scope, collection, doc, doc_id=None, mute=False): 
     
     cb_collection = cluster.bucket(bucket).scope(scope).collection(collection)
         
@@ -48,7 +48,8 @@ def insert_doc(bucket, scope, collection, doc, doc_id=None):
             doc
         )
         
-        print(f"Insert {collection} successful: {docid}")
+        if not mute:
+            print(f"Insert {collection} successful: {docid}")
         
         return docid
         

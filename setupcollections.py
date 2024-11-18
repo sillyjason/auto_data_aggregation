@@ -75,16 +75,16 @@ if BUCKET_MAIN_ID is not None:
     
     if scope_data_created:
         create_collection("main", "data", "data")
-        create_collection("main", "data", "temp")
 
     if scope_aggregation_created:
-        create_collection("main", "aggregation", "minute")
-        create_collection("main", "aggregation", "minute_api")
-
+        create_collection("main", "aggregation", "m_rt_all")
+        create_collection("main", "aggregation", "m_e_kv_all")
+        create_collection("main", "aggregation", "m_api_all")
+        create_collection("main", "aggregation", "m_e_kv_users")
+        
 
 if BUCKET_EVENTING_ID is not None:
     create_collection("eventing", "_default", "one_off_trigger_one")
-    create_collection("eventing", "_default", "one_off_trigger_two")
-
+   
 
 print_success("Done setting up data structures..")

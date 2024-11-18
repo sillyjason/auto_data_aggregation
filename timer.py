@@ -3,10 +3,11 @@ import datetime
 import time 
 from couchbaseops import run_query, subdocument_upsert
 
-# Step 2: Define the function to be called by the timer
-def my_function():
+
+# Step 1: Define the function to be called by the timer
+def fire_query_func():
     print("Timer fired! Function executed.")
-    # Step 5: Set up the timer to fire again at the beginning of the next minute
+    # Step 4: Set up the timer to fire again at the beginning of the next minute
     
     # print out current time, formatted under current
     current_time_millis = int(time.time() * 1000)    
@@ -14,7 +15,7 @@ def my_function():
     
     # compose and run the query
     query = """
-    INSERT INTO `main`.`aggregation`.`minute_api` (KEY k, VALUE v)
+    INSERT INTO `main`.`aggregation`.`m_api_all` (KEY k, VALUE v)
     SELECT v.start_time k, v
     FROM
     (
@@ -33,7 +34,7 @@ def my_function():
             "platinum": SUM(CASE WHEN cust_type = "platinum" THEN 1 ELSE 0 END)
             } AS category
         FROM `main`.`data`.`data`
-        WHERE `time_unix` BETWEEN s AND e
+        WHERE `time_unix` BETWEEN s*1000 AND e*1000
     ) v
     RETURNING DATE_TRUNC_STR(DATE_ADD_STR(NOW_STR(),-1,"minute"),"minute") AS start_time
     """
@@ -51,23 +52,24 @@ def my_function():
     # run a subdocument upsert to update the task initiation time in milliseconds; 
     # this is to calculate the speed of couchbase being able to process the query
     if doc_key:
-        subdocument_upsert("main", "aggregation", "minute_api", doc_key, "sender_task_start_time", current_time_millis)
+        subdocument_upsert("main", "aggregation", "m_api_all", doc_key, "sender_task_start_time", current_time_millis)
     
     
     schedule_next_minute()
 
 
-# Step 3: Define the function to schedule the next timer
+# Step 2: Define the function to schedule the next timer
 def schedule_next_minute():
     now = datetime.datetime.now()
     # Calculate the time until the next minute starts
     milliseconds_until_next_minute = (60 - now.second) * 1000 - now.microsecond // 1000
+        
     # Create a timer to fire at the beginning of the next minute
-    timer = threading.Timer(milliseconds_until_next_minute / 1000, my_function)
+    timer = threading.Timer(milliseconds_until_next_minute / 1000, fire_query_func)
     timer.start()
 
 
-# Step 4: Schedule the first timer
+# Step 3: Schedule the first timer
 schedule_next_minute()
 
 print("Timer started. Waiting for it to fire at the beginning of every minute...")

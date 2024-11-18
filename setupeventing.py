@@ -34,7 +34,8 @@ def import_function(function_name):
         print_error(f"Error importing function {function_name}: {str(e)}")
 
 
+
+import_function("on_data_input")
 import_function("recur_aggregation_trigger")
-import_function("recur_final_ingestion")
-import_function("recurr_ingestion_trigger")
+import_function("on_data_input_junior")
 
