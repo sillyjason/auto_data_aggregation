@@ -1,3 +1,5 @@
+<br><br>
+
 # 🚀 Use Couchbase with a Recurring Timer for Auto Aggregation 🚀
 
 <br>
@@ -96,10 +98,13 @@ python3 dataingest.py
 
 # Let's Begin with the Convenient Approach
 
+![MEM1](https://github.com/user-attachments/assets/451bab91-54cd-4cd2-b086-7c20961890cb)
+
+<br>
+
 Go to Couchbase and verify this qps. The **ops/sec** metric should reflect this number, give or take. "Give" as in additional writes from the Eventing functions, "take" as in my when the local machine (such as my laptop) running has limited computing power.
 
 ![Screenshot 2024-11-16 at 10 22 20 PM](https://github.com/user-attachments/assets/152e6b98-d963-4168-bfb9-6786e8e003f4)
-
 
 <br>
 
@@ -304,15 +309,21 @@ Pay attention to the **readiness_time_delta** output.
 
 <img width="829" alt="Screenshot 2024-11-18 at 9 32 32 PM" src="https://github.com/user-attachments/assets/ee2f1ac4-d36e-4ff9-8ebb-a80b4dc47050">
 
-<br>
+<br><br>
 
-Why are there minus time delta? Well, that means the aggregation is done right after the data mutations. What happening under the hood, is that the 1000 writes per second is being instantaneously passed from Couchbase Data service to Eventing service, which will write back to the same aggregation doc. This means, if your last transaction happens at the last 10 millisecond of the minute, given Couchbase 5 ms to process, the aggregation document is ready BEFORE the next minute! 
+Why are there minus time delta? Well, that means the aggregation is done right after the data mutations. 
+
+What happening under the hood, is that the 1000 writes per second is being instantaneously passed from Couchbase Data service to Eventing service, which will write back to the same aggregation doc. This means, if your last transaction happens at the last 10 millisecond of the minute, given Couchbase 5 ms to process, the aggregation document is ready BEFORE the next minute! 
 
 <img width="479" alt="image" src="https://github.com/user-attachments/assets/cbffe52b-c20f-4b04-8e18-68460ccd53e6">
 
 <br><br>
 
-If you're a database guru, a big red light's probably looming over your head - race condition. Worry not, it can be taken care of by Couchbase's [CAS mechanism](https://docs.couchbase.com/java-sdk/current/howtos/concurrent-document-mutations.html) and versatility of Javascript used by Couchbase Eventing functions. If you are interested on how exactly this is done, head over to Eventing, while we can see how a re-try mechanism is implemented to circumvent the race condition problem.
+# The Race Condition Problem
+
+If you're a database guru, a big red light's probably looming over your head - race condition. After all, we are doing 1000 thousand aggregation updates per second on a single document. 
+
+Worry not, it can be taken care of by Couchbase's [CAS mechanism](https://docs.couchbase.com/java-sdk/current/howtos/concurrent-document-mutations.html) and versatility of Javascript used by Couchbase Eventing functions. If you are interested on how exactly this is done, head over to Eventing, while we can see how a re-try mechanism is implemented to circumvent the race condition problem.
 
 <img width="1671" alt="Screenshot 2024-11-18 at 9 42 27 PM" src="https://github.com/user-attachments/assets/65626d75-c0e9-47d7-a2be-7c759b2f9bfa">
 
