@@ -1,4 +1,4 @@
-<img width="829" alt="Screenshot 2024-11-18 at 9 32 32 PM" src="https://github.com/user-attachments/assets/016c69b4-0ae2-4ea4-9a38-cc6881a3186e"># 🚀 Use Couchbase with a Recurring Timer for Auto Aggregation 🚀
+# 🚀 Use Couchbase with a Recurring Timer for Auto Aggregation 🚀
 
 <br>
 
@@ -300,19 +300,19 @@ order by start_time
 
 <br>
 
-Why are there minus time delta? 
-
-Well, that means the aggregation is done right after the data mutations. What happening under the hood, is that the 1000 writes per second is being instantaneously passed from Couchbase Data service to Eventing service, which will write back to the same aggregation doc. 
+Why are there minus time delta? Well, that means the aggregation is done right after the data mutations. What happening under the hood, is that the 1000 writes per second is being instantaneously passed from Couchbase Data service to Eventing service, which will write back to the same aggregation doc. 
 
 <img width="829" alt="Screenshot 2024-11-18 at 9 32 32 PM" src="https://github.com/user-attachments/assets/ee2f1ac4-d36e-4ff9-8ebb-a80b4dc47050">
 
-<br>
+<br><br>
 
-If you're a database guru, you're probably already thinking about a big red light - race condition. Worry not, it can be taken care of by Couchbase's [CAS mechanism](https://docs.couchbase.com/java-sdk/current/howtos/concurrent-document-mutations.html) and versatility of Javascript used by Couchbase Eventing functions. If you are interested on how exactly this is done, head over to Eventing, 
+If you're a database guru, a big red light's probably looming over your head - race condition. Worry not, it can be taken care of by Couchbase's [CAS mechanism](https://docs.couchbase.com/java-sdk/current/howtos/concurrent-document-mutations.html) and versatility of Javascript used by Couchbase Eventing functions. If you are interested on how exactly this is done, head over to Eventing, while we can see how a re-try mechanism is implemented to circumvent the race condition problem.
 
 <img width="1671" alt="Screenshot 2024-11-18 at 9 42 27 PM" src="https://github.com/user-attachments/assets/65626d75-c0e9-47d7-a2be-7c759b2f9bfa">
 
+<br>
 
+If you'interested to dig on, there's also the other function **on_data_inpput**, which does exact the same thing as its little brother - except it aggregates at individual user level. Feel free to deploy it and see what happens to the **main.aggregation.m_e_kv_users** collection!
 
 <br>
 
