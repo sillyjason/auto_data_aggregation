@@ -1,4 +1,4 @@
-# 🚀 Use Couchbase with a Recurring Timer for Auto Aggregation 🚀
+<img width="829" alt="Screenshot 2024-11-18 at 9 32 32 PM" src="https://github.com/user-attachments/assets/016c69b4-0ae2-4ea4-9a38-cc6881a3186e"># 🚀 Use Couchbase with a Recurring Timer for Auto Aggregation 🚀
 
 <br>
 
@@ -11,9 +11,9 @@ This demo wants to show you a Couchbase point-of-view. There are more than 1 way
 
 # Setup
 
-Set up a Couchbase cluster with **Data, Index, Query, Eventing** service deployed. If you are not familiar with Couchbase cluster setup, follow [this](https://docs.couchbase.com/server/current/manage/manage-nodes/create-cluster.html) documentation. I'm using 2 machines of **t2.2xlarge** with **16 vCPU** and **32GiB** of Memory. 
+Set up a Couchbase cluster with **Data, Index, Query, Eventing** service deployed. If you are not familiar with Couchbase cluster setup, follow [this](https://docs.couchbase.com/server/current/manage/manage-nodes/create-cluster.html) documentation. I'm using 4 machines of **t2.2xlarge** with **16 vCPU** and **32GiB** of memory. 2 machines with Data, Index and Query servies deployed, and 2 other with Eventing. 
 
->🙌🏻 This 2-node deployment is really just for testing purposes. For any production workload you'd want at least 3 nodes (for Data service) or 2 nodes (for other Couchbase services) for High Availability services. It's also a good idea to leverage Couchbase's [multi-dimensional scaling](https://docs.couchbase.com/operator/current/concept-mds.html) for isolcated workloads deployment when necessary.
+Yes. You can deploy services independently on Couchbase that's one of the benefits you get - making your infrastructure more resilient, and so sudden surge on query, for example, won't consume all computing powers and cause massive time out to your data insertions. To dig deeper, read our documents on [Multi-dimensional Scaling](https://www.couchbase.com/multi-dimensional-scalability-overview/).
 
 
 <br><br>
@@ -286,10 +286,31 @@ Let's flush again the bucket. Then, go to **Eventing** tab and deploy function *
 
 <br>
 
-Once deployment is done, restart the data ingestion script. 
+Once deployment is done, restart the data ingestion script. Give it a couple of minutes, and let's run the query again to see how early our aggregation can be ready. 
+
+```
+select meta().id, 
+count,
+sender_task_start_time, 
+MILLIS_TO_UTC(META().cas/1000000) as doc_available_time_fmt,
+trunc(META().cas/1000000 - str_to_millis(meta().id) - 60000) as readiness_time_delta
+from `main`.`aggregation`.`m_e_kv_all`
+order by start_time
+```
 
 <br>
 
+Why are there minus time delta? 
+
+Well, that means the aggregation is done right after the data mutations. What happening under the hood, is that the 1000 writes per second is being instantaneously passed from Couchbase Data service to Eventing service, which will write back to the same aggregation doc. 
+
+<img width="829" alt="Screenshot 2024-11-18 at 9 32 32 PM" src="https://github.com/user-attachments/assets/ee2f1ac4-d36e-4ff9-8ebb-a80b4dc47050">
+
+<br>
+
+If you're a database guru, you're probably already thinking about a big red light - race condition. Worry not, it can be taken care of by Couchbase's [CAS mechanism](https://docs.couchbase.com/java-sdk/current/howtos/concurrent-document-mutations.html) and versatility of Javascript used by Couchbase Eventing functions. If you are interested on how exactly this is done, head over to Eventing, 
+
+<img width="1671" alt="Screenshot 2024-11-18 at 9 42 27 PM" src="https://github.com/user-attachments/assets/65626d75-c0e9-47d7-a2be-7c759b2f9bfa">
 
 
 
