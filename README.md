@@ -329,6 +329,52 @@ Worry not, it can be taken care of by Couchbase's [CAS mechanism](https://docs.c
 
 <br>
 
+Here's a quick code sample of how this is done: 
+```
+// use a while loop to keep retrying the operation until it succeeds
+// this is to handle the potential CAS mismatch issue
+// define the success flag and retry counter
+let success = false;
+let retry_counter = 0;
+
+while ( !success ) {
+    // update the document with the new transaction
+    // the m_e_kv_all is the collection varialbe, while aggregation_meta contains the
+    // CAS value will should be compared and validated before this update take effect.
+    // otherwise, an error message will be returned to trigger retries.
+    let aggregate_result = couchbase.mutateIn(m_e_kv_all, aggregation_meta, [ 
+        couchbase.MutateInSpec.replace("count", new_count),
+        couchbase.MutateInSpec.replace("total_amt", new_total_amt),
+        couchbase.MutateInSpec.replace("average_amt", new_average_amt),
+        couchbase.MutateInSpec.upsert("cust_type", new_cust_type),
+    ]);
+   
+    if (aggregate_result.success) {
+        // print the try_counter only if it's greater than 0
+        if ( retry_counter > 0 ) {
+            log("insert success at retry: ", retry_counter);
+        }
+
+        // set the success flag to true and exit the loop
+        success = true; 
+    }
+    
+    // increment the retry counter
+    retry_counter++;
+    
+    // retry 
+    var result = couchbase.get(m_e_kv_all, { "id": doc_key });
+    if (result.success) {
+        current_doc = result.doc;
+        aggregation_meta = result.meta;
+    }
+}
+```
+
+<br>
+
+# Aggregation at User Level
+
 If you'interested to dig on, there's also the other function **on_data_inpput**, which does exact the same thing as its little brother - except it aggregates at individual user level. Feel free to deploy it and see what happens to the **main.aggregation.m_e_kv_users** collection!
 
 <br>
