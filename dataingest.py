@@ -18,7 +18,7 @@ def insert_document():
         "time_str": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S"), # client time in string format up to seconds
         "time_str_trunc": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M"), # client time in string format up to minutes
         "user_id": f"user{random.randint(1, 100)}", # random user id
-        "amount": 100, # random amount
+        "amount": 100, # or can be random amount
         "cust_type": random.choice(["silver", "gold", "platinum"]) # random customer type
     }
     
