@@ -300,9 +300,15 @@ order by start_time
 
 <br>
 
-Why are there minus time delta? Well, that means the aggregation is done right after the data mutations. What happening under the hood, is that the 1000 writes per second is being instantaneously passed from Couchbase Data service to Eventing service, which will write back to the same aggregation doc. 
+Pay attention to the **readiness_time_delta** output.
 
 <img width="829" alt="Screenshot 2024-11-18 at 9 32 32 PM" src="https://github.com/user-attachments/assets/ee2f1ac4-d36e-4ff9-8ebb-a80b4dc47050">
+
+<br>
+
+Why are there minus time delta? Well, that means the aggregation is done right after the data mutations. What happening under the hood, is that the 1000 writes per second is being instantaneously passed from Couchbase Data service to Eventing service, which will write back to the same aggregation doc. This means, if your last transaction happens at the last 10 millisecond of the minute, given Couchbase 5 ms to process, the aggregation document is ready BEFORE the next minute! 
+
+<img width="479" alt="image" src="https://github.com/user-attachments/assets/cbffe52b-c20f-4b04-8e18-68460ccd53e6">
 
 <br><br>
 
@@ -316,38 +322,14 @@ If you'interested to dig on, there's also the other function **on_data_inpput**,
 
 <br>
 
-![image](https://github.com/user-attachments/assets/23b66a3e-b403-4f31-b440-191914065db7)
-
-<br><br>
-
-
-## Let's Do Some Digging
-
-Go to **Query** tab, and run the following:
+And in this case, since we'll be looking at multiple user aggregation documents, the way to validate that Eventing is indeed capturing all mutations, is through another quick SQL, something like below: 
 ```
-select meta().id, 
-sender_task_start_time, 
-TRUNC(META().cas/1000000) - sender_task_start_time as sdk_cycle_time, 
-MILLIS_TO_UTC(META().cas/1000000) as doc_available_time_fmt,
-TRUNC(META().cas/1000000) as doc_available_time
-from minute_api
-order by start_time desc
+SELECT SUM(count) AS count_sum
+FROM `main`.`aggregation`.`m_e_kv_users`
+WHERE META().id LIKE "2024-11-18T12:21%"
 ```
 
 <br>
-
->🙌🏻 **META().cas** is the server timestamp of last update in nanosecond; derived from META().cas, doc_available_time_fmt is the time of doc being available at precision of milliseconds – indicating how many ms elapsed since the beginning of the minute.
->
-> **sender_task_start_time** is when the external timer started the task
->
-> **sdk_cycle_time** is the time it takes Couchbase to process and query and make ready the output document (including the time it takes for CB server to receive the request). So obviously it's taking Couchbase less than 400ms to run a query that aggregates 90,000+ documents and persist output with just 1 node of minimum resources.
-
-
-<br>
-
-
-![image](https://github.com/user-attachments/assets/8b2f777a-1513-4137-a16d-4c7a4fb374ef)
-
 
 
 
