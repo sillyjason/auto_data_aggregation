@@ -235,7 +235,7 @@ sender_task_start_time,
 MILLIS_TO_UTC(META().cas/1000000) as doc_available_time_fmt,
 trunc(META().cas/1000000 - str_to_millis(meta().id) - 60000) as readiness_time_delta
 from `main`.`aggregation`.`m_api_all`
-order by start_time
+order by meta().id
 ```
 
 <br>
