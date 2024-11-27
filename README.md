@@ -8,6 +8,8 @@ It's common to see high volume of data ingestion plus having to run aggregate ev
 
 This demo wants to show you a Couchbase point-of-view. There are more than 1 way to do it actually, we just need a good balance of dev simplify, service level, and scalability. In this demo we'll look at 3 approaches, what i call the [CONVENIENT](https://github.com/sillyjason/auto_data_aggregation/blob/main/README.md#lets-begin-with-the-convenient-approach) the [QUICK](https://github.com/sillyjason/auto_data_aggregation/blob/main/README.md#the-quick-approach), and the [QUICKEST](https://github.com/sillyjason/auto_data_aggregation/blob/main/README.md#the-quickest-approach). 
 
+<br>
+
 >🙌🏻 Financial service is not the only industry that can benefit from this demo. Essentially any use case that require lightning-fast aggregation applies. 
 
 <br><br>
