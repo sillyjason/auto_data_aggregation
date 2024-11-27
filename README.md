@@ -1,6 +1,6 @@
 <br><br>
 
-# 🚀 Use Couchbase with a Recurring Timer for Auto Aggregation 🚀
+# 🚀 Use Couchbase for Millisecond-level Auto Aggregation 🚀
 
 <br>
 
